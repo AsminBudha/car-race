@@ -56,13 +56,8 @@ class Car{
 
   };
 
-  updateSpeed(elapsed){
-  	let speedChange = this.acceleration;// * (elapsed);
-  	// console.log(this.speed+speedChange);
-  	if(this.speed+speedChange<this.maxSpeed){
-  		this.speed+=speedChange;
-  		console.log(this.speed)
-  	}
+  accelerate(accel,dt){
+    this.speed += accel * dt;
   }
 
   getRandomInt(min, max) {

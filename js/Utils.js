@@ -28,7 +28,7 @@ let GAME_VARIABLES={
     step : 0,                   // how long is each frame (in seconds)
     speed : 1,                    // current speed
     maxSpeed : 0,      // top speed (ensure we can't move more than 1 segment in a 
-    centrifugal : 0.3,
+    centrifugal : 0.008,
     step : 1,                   // how long is each frame (in seconds)
     offRoadDecel : 0.99                    // speed multiplier when off road (e.g. you lose 2% speed each 
 }
@@ -36,7 +36,7 @@ GAME_VARIABLES.cameraDepth = 1 / Math.tan((GAME_VARIABLES.fieldOfView/2) * Math.
 GAME_VARIABLES.resolution = GAME_VARIABLES.CANVAS_HEIGHT/480;
 GAME_VARIABLES.step = 1/GAME_VARIABLES.fps;
 GAME_VARIABLES.maxSpeed = GAME_VARIABLES.segmentLength/GAME_VARIABLES.step;
-GAME_VARIABLES.step = 1/fps;
+GAME_VARIABLES.step = 1/GAME_VARIABLES.fps;
 
 // let CAR = {
 // 	MAX_SPEED : 5,
