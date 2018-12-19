@@ -25,7 +25,7 @@ class Game {
 
 		this.backgroundX = -100;
 
-		this.enemyUpdateCounter = 0;
+		this.cursor = 0;
 
 		let totalImg = 0;
 		let onLoad = () => {
@@ -37,7 +37,6 @@ class Game {
 				this.last = new Date().getTime();
 				this.gdt = 0;
 				this.countdown = -1;
-				this.gameFinish = false;
 
 				this.road.initObstacles(this.sprites);
 
@@ -73,11 +72,7 @@ class Game {
 
 			GAME_VARIABLES.ctx.clearRect(0, 0, GAME_VARIABLES.CANVAS_WIDTH, GAME_VARIABLES.CANVAS_HEIGHT);
 
-			gameThat.enemyUpdateCounter++;
-			if (gameThat.enemyUpdateCounter > 0) {
-				gameThat.updateEnemiesPosition();
-				gameThat.enemyUpdateCounter = 0;
-			}
+			gameThat.updateEnemiesPosition();
 
 
 			gameThat.drawBackground();
@@ -105,7 +100,6 @@ class Game {
 		}
 
 		if (gameThat.gameFinish && gameThat.player.speed == 0) {
-			// console.log('gameFinish')
 			GAME_VARIABLES.ctx.fillText('Game Finish', 400, 50)
 			return;
 		}
@@ -118,43 +112,29 @@ class Game {
 
 		for (let i = 0; i < gameThat.enemies.length; i++) {
 
-			let enemySegment = gameThat.road.findSegment(gameThat.enemies[i].position + gameThat.enemies[i].playerZ);
-
-			gameThat.enemies[i].update(GAME_VARIABLES.step, enemySegment, totalTrackLength);
-			// console.log('enemies');
-
+			gameThat.enemies[i].update(GAME_VARIABLES.step, totalTrackLength, this.gameFinish);
 
 		}
 	}
 
 	update(dt) {
-		// gameThat.position = gameThat.position+(dt*gameThat.player.speed);
 
 		let totalTrackLength = GAME_VARIABLES.segmentLength * gameThat.road.segments.length;
 
 		let playerSegment = gameThat.road.findSegment(gameThat.player.position + gameThat.player.z);
-		// console.log(gameThat.player,playerSegment,gameThat.player.position,gameThat.player.z);
 
 		gameThat.player.update(dt
 			, playerSegment
 			, totalTrackLength
 			, gameThat.keyPressedFlags);
 
-
-		if (gameThat.player.position == 5 && gameThat.firstPass) {
-
-			gameThat.firstPass = false;
-		}
-		else if (gameThat.player.position == 5 && !gameThat.firstPass) {
-			gameThat.gameFinish = true;
-		}
-
 		if (playerSegment.curve > 0 && gameThat.player.speed) {
 			gameThat.updateBackground(true);
 		}
-		else if (playerSegment.curve < 0) {
+		else if (playerSegment.curve < 0 && gameThat.player.speed) {
 			gameThat.updateBackground(false);
 		}
+
 	}
 	drawCountDown(countdown) {
 		GAME_VARIABLES.ctx.drawImage(gameThat.sprites[IMAGES.COUNTDOWN_3 + countdown], GAME_VARIABLES.CANVAS_WIDTH / 2 - 150, 10);

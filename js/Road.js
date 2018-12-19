@@ -41,10 +41,9 @@ class Road {
 		let playerX = player.x;
 		let playerZ = player.z;
 		let playerSegment = this.findSegment(player.position + playerZ);
-		// console.log(player.position,playerZ,playerSegment);
+
 		player.playerX = player.x - (playerSegment.curve * GAME_VARIABLES.centrifugal);
 
-		// console.log(player.position-2);
 		var baseSegment = this.findSegment(player.position);
 		var maxy = GAME_VARIABLES.CANVAS_HEIGHT;
 		var n, segment;
@@ -96,8 +95,6 @@ class Road {
 				GAME_VARIABLES.ctx.fillRect(0, segment.p2.screen.y, GAME_VARIABLES.CANVAS_WIDTH, segment.p1.screen.y - segment.p2.screen.y);
 			}
 
-
-
 			maxy = segment.p2.screen.y;
 		}
 
@@ -109,50 +106,43 @@ class Road {
 				let spriteX = segment.p1.screen.x + (spriteScale * sprite.offset * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2);
 				let spriteY = segment.p1.screen.y;
 
+				let objCoordintaes = {
+					x: 0,
+					y: 0,
+					width: 0,
+					height: 0
+				};
+
 				renderSprite(sprite.sprite, spriteScale
-					, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip);
+					, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip, objCoordintaes);
 
 				if (segment == playerSegment) {
 
 					let playerSprite = sprites[IMAGES.PLAYER_STRAIGHT];
 					let spriteW = sprite.sprite.width * SPRITE.scale;
 
-					if (player.checkCollisionWith(player.playerX, playerSprite.width * SPRITE.scale, sprite.offset + spriteW / 2 * (sprite.offset > 0 ? 1 : -1), spriteW)) {
-						if (player.speed > 0)
-							player.speed = 0;
+					if (player.checkCollisionWith(objCoordintaes)) {
+						player.speed = 0;
 					}
 				}
 			}
 			for (let i = 0; i < enemies.length; i++) {
-				// console.log('enemy', enemies[i].position);
+
 				let enemySegment = this.findSegment(enemies[i].position + enemies[i].z);
-				let enemyPercent = this.percentRemaining(enemies[i].position + enemies[i].playerZ, GAME_VARIABLES.segmentLength);
-
-				let enemyScale = segment.p1.screen.scale;
-				let enemyX = segment.p1.screen.x + (enemyScale * enemies[i].playerOffset * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2);
-				let enemyY = segment.p1.screen.y;
-
-				// console.log(enemies[i].position);
 
 				if (segment == enemySegment) {
-					// console.log('enemy')
-					renderSprite(sprites[IMAGES.PLAYER_STRAIGHT], enemyScale
-						, enemyX, enemyY, (enemies[i].playerOffset < 0 ? -1 : 0), -1, segment.clip);
+					enemies[i].drawEnemy(enemySegment, sprites);
 				}
-				// enemies[i].renderPlayer(sprites
-				// 	,GAME_VARIABLES.speed/GAME_VARIABLES.maxSpeed
-				// 	,GAME_VARIABLES.cameraDepth/enemies[i].playerZ
-				// 	,GAME_VARIABLES.CANVAS_WIDTH/2
-				// 	,(GAME_VARIABLES.CANVAS_HEIGHT/2) - (GAME_VARIABLES.cameraDepth/enemies[i].playerZ
-				// 				* this.interpolate(enemySegment.p1.camera.y, enemySegment.p2.camera.y, playerPercent)
-				// 				* GAME_VARIABLES.CANVAS_HEIGHT/2)
-				//   , GAME_VARIABLES.speed
-				//   , enemySegment.p2.world.y - enemySegment.p1.world.y
-				//   );
+
+				if (enemySegment == playerSegment) {
+					if (player.checkCollisionWith(enemies[i].worldCoordinates)) {
+						player.speed = 0;
+					}
+				}
 			}
 
 			if (segment == playerSegment) {
-				// console.log('player');
+
 				player.drawPlayer(sprites
 					, GAME_VARIABLES.speed * (keyLeft ? -1 : keyRight ? 1 : 0)
 					, playerSegment.p2.world.y - playerSegment.p1.world.y
@@ -165,7 +155,6 @@ class Road {
 
 			}
 		}
-		// console.log(enemies.length);
 
 	}
 
