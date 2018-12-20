@@ -12,13 +12,16 @@ class Car {
     this.DECCEL = 1;
     this.NO_ACCEL = -1;
     this.crossFinish = false;
+    this.currentPosition=0;
   }
 
   updatePosition(dt, totalTrackLength) {
 
     this.position = this.position + (dt * this.speed);
 
-    if (this.position > totalTrackLength) {
+    this.currentPosition+=(dt*this.speed);
+
+    if (this.currentPosition > totalTrackLength) {
       this.crossFinish = true;
     }
 
@@ -65,22 +68,19 @@ class Car {
       if (this.speed > GAME_VARIABLES.offRoadLimit) {
         this.accelerate(GAME_VARIABLES.offRoadDecel, dt);
       }
-      else if (this.speed < 0 && this.speed < -GAME_VARIABLES.offRoadLimit) {
-        // gameThat.player.accelerate(-gameThat.player.offRoadDecel, dt);
-        this.speed = -GAME_VARIABLES.offRoadLimit;
+      else if(this.speed<0 && this.speed<-GAME_VARIABLES.offRoadLimit/6){
+        console.log(this.speed,-GAME_VARIABLES.offRoadLimit,-GAME_VARIABLES.offRoadDecel);
+        this.accelerate(-GAME_VARIABLES.offRoadDecel*2.5,dt);
+        console.log('next',this.speed);
       }
-
     }
 
-    this.speed = Math.max(0, Math.min(this.speed, maxSpeed)); // or exceed maxSpeed
-
-    // if (!accel == this.DECCEL) {
-
-
-    // }
-    // else {
-    //   this.speed = Math.max(this.speed, maxSpeed);
-    // }
+    if (!accel == this.DECCEL) {
+      this.speed = Math.max(0, Math.min(this.speed, maxSpeed)); // or exceed maxSpeed
+    }
+    else if(accel==this.DECCEL){
+      this.speed = Math.max(this.speed, maxSpeed);
+    }
 
   }
 

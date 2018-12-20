@@ -16,8 +16,8 @@ let GAME_VARIABLES = {
 	roadWidth: 2000,
 	lanes: 2,
 	COLOR: {
-		GRASS_DARK: '#007f00',
-		GRASS_LIGHT: '#00b200',
+		GRASS_DARK: '#97837A',
+		GRASS_LIGHT: '#97837A',
 		ROAD: 'gray',
 		RUMBLE_DARK: 'red',
 		RUMBLE_LIGHT: 'yellow',
@@ -47,18 +47,23 @@ let CAR = {
 };
 
 let IMAGES = {
-	PLAYER_LEFT: 0,
-	PLAYER_RIGHT: 1,
-	PLAYER_STRAIGHT: 2,
-	PLAYER_UPHILL_LEFT: 3,
-	PLAYER_UPHILL_RIGHT: 4,
-	PLAYER_UPHILL_STRAIGHT: 5,
-	COUNTDOWN_3: 6,
-	COUNTDOWN_2: 7,
-	COUNTDOWN_1: 8,
-	COUNTDOWN_GO: 9,
-	TREE_1: 10
-	, BACKGROUND: 11
+	PLAYER_LEFT: 0
+	,PLAYER_RIGHT: 1
+	,PLAYER_STRAIGHT: 2
+	,PLAYER_UPHILL_LEFT: 3
+	,PLAYER_UPHILL_RIGHT: 4
+	,PLAYER_UPHILL_STRAIGHT: 5
+	,COUNTDOWN_3: 6
+	,COUNTDOWN_2: 7
+	,COUNTDOWN_1: 8
+	,COUNTDOWN_GO: 9
+	,TREE_1: 10
+	,BACKGROUND: 11
+	,PLAYER_STEER_STILL:12
+	,PLAYER_STEER_LEFT:13
+	,PLAYER_STEER_RIGHT:14
+	,DESERT_GROUND:15
+	,DESERT_STONE:16
 };
 
 let IMAGES_SRC = [
@@ -73,7 +78,12 @@ let IMAGES_SRC = [
 	, 'img/countdown/1.png'
 	, 'img/countdown/go.png'
 	, 'img/column.png'
-	, 'img/background/background.png'];
+	, 'img/background/background.png'
+	,'img/player/steer_still.png'
+	,'img/player/steer_left.png'
+	,'img/player/steer_right.png'
+	,'img/background/desert-ground.png'
+	,'img/desert-stone.png'];
 
 const writeText = (ctx, x, y, text, font, color) => {
 	ctx.font = font;

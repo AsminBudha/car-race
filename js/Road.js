@@ -4,15 +4,19 @@ class Road {
 		this.totalLenghtOfRoad = 0;
 		this.segments = [];
 
-		this.miniMapW = 300;
-		this.miniMapH = 200;
-		this.miniMapX = 1;
-		this.miniMapY = this.miniMapH - 2;
+		this.miniMapW = 500;
+		this.miniMapH = 300;
+		this.miniMapX = 2;
+		this.miniMapY = this.miniMapH/ 2;
 		this.miniMapCanvas = document.createElement('canvas');
 		this.miniMapCanvas.width = this.miniMapW;
 		this.miniMapCanvas.height = this.miniMapH
-		this.miniMapCtxt = this.miniMapCanvas.getContext('2d');
+		this.miniMapDdx=0;
+		this.miniMapDx=0;
 
+		this.miniMapCtxt = this.miniMapCanvas.getContext('2d');
+		this.miniMapCtxt.fillStyle='yellow';
+		this.miniMapCtxt.fillRect(0,0,this.miniMapW,this.miniMapH)
 		this.initSegment();
 	}
 
@@ -24,7 +28,7 @@ class Road {
 			this.addRoad(length, length, length, item.curve, item.height);
 
 			this.totalLenghtOfRoad += item.length;
-
+			this.addSegmentInMiniMap(item.curve,item.length)
 		});
 
 
@@ -88,7 +92,7 @@ class Road {
 				segment.p2.screen.x,
 				segment.p2.screen.y,
 				segment.p2.screen.w,
-				segment.color);
+				segment.color,sprites);
 
 			if (segment.index == 8) {
 				GAME_VARIABLES.ctx.fillStyle = 'white';
@@ -118,9 +122,6 @@ class Road {
 
 				if (segment == playerSegment) {
 
-					let playerSprite = sprites[IMAGES.PLAYER_STRAIGHT];
-					let spriteW = sprite.sprite.width * SPRITE.scale;
-
 					if (player.checkCollisionWith(objCoordintaes)) {
 						player.speed = 0;
 					}
@@ -141,24 +142,19 @@ class Road {
 				}
 			}
 
-			if (segment == playerSegment) {
-
-				player.drawPlayer(sprites
-					, GAME_VARIABLES.speed * (keyLeft ? -1 : keyRight ? 1 : 0)
-					, playerSegment.p2.world.y - playerSegment.p1.world.y
-					, GAME_VARIABLES.CANVAS_WIDTH / 2
-					, (GAME_VARIABLES.CANVAS_HEIGHT / 2)
-					- (GAME_VARIABLES.cameraDepth / playerZ
-						* this.interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent)
-						* GAME_VARIABLES.CANVAS_HEIGHT / 2)
-				);
-
-			}
 		}
-
+		player.drawPlayer(sprites
+			, GAME_VARIABLES.speed * (keyLeft ? -1 : keyRight ? 1 : 0)
+			, playerSegment.p2.world.y - playerSegment.p1.world.y
+			, GAME_VARIABLES.CANVAS_WIDTH / 2
+			, (GAME_VARIABLES.CANVAS_HEIGHT / 2)
+			- (GAME_VARIABLES.cameraDepth / playerZ
+				* this.interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent)
+				* GAME_VARIABLES.CANVAS_HEIGHT / 2)
+		);
 	}
 
-	drawRoadSegment(x1, y1, w1, x2, y2, w2, color) {
+	drawRoadSegment(x1, y1, w1, x2, y2, w2, color,sprites) {
 
 		let lanes = GAME_VARIABLES.lanes;
 		let r1 = this.getRumbleWidth(w1, lanes),
@@ -168,8 +164,10 @@ class Road {
 		let lanew1, lanew2, lanex1, lanex2, lane;
 
 		//Grass with full Canvas width
-		GAME_VARIABLES.ctx.fillStyle = color.grass;
-		GAME_VARIABLES.ctx.fillRect(0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
+		// GAME_VARIABLES.ctx.fillStyle = color.grass;
+		// GAME_VARIABLES.ctx.fillRect(0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
+		let ground=sprites[IMAGES.DESERT_GROUND];
+		GAME_VARIABLES.ctx.drawImage(ground,0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
 
 		this.drawPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble);
 		this.drawPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble);
@@ -195,13 +193,16 @@ class Road {
 		for (n = 0; n < enter; n++) {
 			let tempCurve = this.easeIn(0, curve, n / enter);
 			this.addSegment(tempCurve, this.easeInOut(startY, endY, n / total));
+			this.addSegmentInMiniMap(tempCurve);
 		}
 		for (n = 0; n < hold; n++) {
 			this.addSegment(curve, this.easeInOut(startY, endY, (enter + n) / total));
+			this.addSegmentInMiniMap(curve);
 		}
 		for (n = 0; n < leave; n++) {
 			let tempCurve = this.easeInOut(curve, 0, n / leave);
 			this.addSegment(tempCurve, this.easeInOut(startY, endY, (enter + hold + n) / total));
+			this.addSegmentInMiniMap(-tempCurve);
 		}
 	}
 
@@ -228,15 +229,16 @@ class Road {
 				'lane': Math.floor(index / GAME_VARIABLES.rumbleLength) & 1 ? GAME_VARIABLES.COLOR.LANE_DARK : GAME_VARIABLES.COLOR.LANE_LIGHT
 			}
 		});
-		this.addSegmentInMiniMap(-curve)
+		// this.addSegmentInMiniMap(curve)
 	}
 
-	addSegmentInMiniMap(yInc) {
+	addSegmentInMiniMap(curve) {
 		this.miniMapCtxt.beginPath();
 		this.miniMapCtxt.moveTo(this.miniMapX, this.miniMapY);
-		this.miniMapX += 0.2;
-		this.miniMapY += yInc;
-
+		
+		this.miniMapX+=0.1;
+		this.miniMapY-=curve;
+		
 		this.miniMapCtxt.lineTo(this.miniMapX, this.miniMapY);
 		this.miniMapCtxt.stroke();
 	}
@@ -248,7 +250,7 @@ class Road {
 		// this.miniMapCtxt.moveTo(0,0);
 		// this.miniMapCtxt.lineTo(50,50);
 		// this.miniMapCtxt.stroke();
-		// GAME_VARIABLES.ctx.drawImage(this.miniMapCanvas,10,10);
+		GAME_VARIABLES.ctx.drawImage(this.miniMapCanvas,10,10);
 
 		// console.log('here')
 	}

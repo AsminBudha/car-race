@@ -58,7 +58,7 @@ class Game {
 
 		if (gameThat.countdown > 3) {
 
-			if (gameThat.gameFinish) {
+			if (gameThat.player.crossFinish) {
 				gameThat.keyPressedFlags[1] = false;
 			}
 
@@ -78,7 +78,10 @@ class Game {
 			gameThat.drawBackground();
 			gameThat.road.renderRoad(gameThat.player, gameThat.sprites
 				, gameThat.keyPressedFlags[0], gameThat.keyPressedFlags[2], gameThat.enemies);
-			// gameThat.road.drawMiniMap();
+			
+			gameThat.player.drawSpeed();
+			gameThat.updatePlayerPosition();
+
 			gameThat.last = now;
 		}
 		else {
@@ -89,6 +92,9 @@ class Game {
 					, gameThat.keyPressedFlags[0], gameThat.keyPressedFlags[2], gameThat.enemies);
 
 				gameThat.road.drawMiniMap();
+
+				gameThat.player.drawSpeed();
+				gameThat.updatePlayerPosition();
 			}
 			if (now - gameThat.last >= 1000) {
 				gameThat.countdown++;
@@ -99,12 +105,71 @@ class Game {
 			}
 		}
 
-		if (gameThat.gameFinish && gameThat.player.speed == 0) {
-			GAME_VARIABLES.ctx.fillText('Game Finish', 400, 50)
+		if (gameThat.player.crossFinish && gameThat.player.speed == 0) {
+			gameThat.showFinishPosition();
 			return;
 		}
 		requestAnimationFrame(gameThat.frame);
 
+	}
+
+	showFinishPosition(){
+		let gameOverText;
+		let positionText;
+		if(gameThat.player.lastPosition==1){
+			gameOverText='You Won';
+			positionText='Your Position is 1st';
+		}
+		else{
+			gameOverText='You Lose';
+			positionText='Your Position is '+gameThat.player.lastPosition;
+		}
+		GAME_VARIABLES.ctx.font='48px serif';
+		GAME_VARIABLES.ctx.shadowBlur = 4;
+		GAME_VARIABLES.ctx.shadowColor='rgba(0,0,0,0.8)';
+		GAME_VARIABLES.ctx.shadowOffsetX=3;
+		GAME_VARIABLES.ctx.shadowOffsetY=3;
+		GAME_VARIABLES.ctx.fillStyle='white';
+		GAME_VARIABLES.ctx.fillText(gameOverText,GAME_VARIABLES.CANVAS_WIDTH/2-100,100);
+		GAME_VARIABLES.ctx.font='40px serif';
+		GAME_VARIABLES.ctx.fillText(positionText,GAME_VARIABLES.CANVAS_WIDTH/2-150,200);
+	}
+	updatePlayerPosition(){
+		if(!gameThat.player.crossFinish){
+			let playerPosition=[];
+			let alreadyFinished=0;
+			
+			for (let i = 0; i < gameThat.enemies.length; i++) {
+				if(gameThat.enemies[i].crossFinish){
+					alreadyFinished++;
+				}
+				else{
+					let key='enemy'+i;
+					playerPosition.push({'name':key,
+						'position' : gameThat.enemies[i].currentPosition});
+				}
+				
+			}
+			playerPosition.push({'name':'player',
+				'position':gameThat.player.currentPosition});
+
+			playerPosition.sort((a,b)=>{
+				return b.position-a.position;
+			});
+
+			for(let i=0;i<playerPosition.length;i++){
+				if(playerPosition[i].name=='player'){
+					let position=i+1+alreadyFinished;
+					gameThat.player.drawPosition(position,this.enemies.length+1);
+					gameThat.player.lastPosition=position;
+					break;
+				}
+			}
+		}
+		else{
+			gameThat.player.drawPosition(gameThat.player.lastPosition,this.enemies.length+1);
+		}
+		
 	}
 
 	updateEnemiesPosition() {
@@ -112,7 +177,7 @@ class Game {
 
 		for (let i = 0; i < gameThat.enemies.length; i++) {
 
-			gameThat.enemies[i].update(GAME_VARIABLES.step, totalTrackLength, this.gameFinish);
+			gameThat.enemies[i].update(GAME_VARIABLES.step, totalTrackLength);
 
 		}
 	}
@@ -156,10 +221,17 @@ class Game {
 
 	keyDownHandler(e) {
 		//arrow key ranges from 37-40 with 37=LEFT in clockwise
-		if (!gameThat.gameFinish)
+		if (!gameThat.player.crossFinish)
 			gameThat.keyPressedFlags[e.keyCode - 37] = true;
 		else {
 			gameThat.keyPressedFlags[e.keyCode - 37] = false;
+		}
+
+		// console.log('key',e.key);
+		switch(e.key){
+			case 'v':
+				gameThat.player.topView=!gameThat.player.topView;
+				break;
 		}
 	}
 

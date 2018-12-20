@@ -47,14 +47,14 @@ class Enemy extends Car {
       , enemyX, enemyY, (this.playerOffset < 0 ? -1 : 0), -1, enemySegment.clip, this.worldCoordinates);
   }
 
-  update(dt, totalTrackLength, gameFinsih) {
+  update(dt, totalTrackLength) {
 
     this.updatePosition(dt, totalTrackLength);
 
     // console.log('accel', this.accel);
     if (this.crossFinish) {
-
-      this.updateSpeed(this.NO_ACCEL, dt, GAME_VARIABLES.decel, this.maxSpeed);
+      if(this.speed>0)
+        this.updateSpeed(this.NO_ACCEL, dt, GAME_VARIABLES.decel, this.maxSpeed);
       // console.log('speed', this.speed);
     }
     else {
