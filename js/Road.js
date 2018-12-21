@@ -7,17 +7,19 @@ class Road {
 		this.miniMapW = 500;
 		this.miniMapH = 300;
 		this.miniMapX = 2;
-		this.miniMapY = this.miniMapH/ 2;
+		this.miniMapY = this.miniMapH / 2;
 		this.miniMapCanvas = document.createElement('canvas');
 		this.miniMapCanvas.width = this.miniMapW;
 		this.miniMapCanvas.height = this.miniMapH
-		this.miniMapDdx=0;
-		this.miniMapDx=0;
+		this.miniMapDdx = 0;
+		this.miniMapDx = 0;
 
 		this.miniMapCtxt = this.miniMapCanvas.getContext('2d');
-		this.miniMapCtxt.fillStyle='yellow';
-		this.miniMapCtxt.fillRect(0,0,this.miniMapW,this.miniMapH)
+		this.miniMapCtxt.fillStyle = 'yellow';
+		this.miniMapCtxt.fillRect(0, 0, this.miniMapW, this.miniMapH)
 		this.initSegment();
+
+		this.sand = [];
 	}
 
 	initSegment() {
@@ -28,7 +30,7 @@ class Road {
 			this.addRoad(length, length, length, item.curve, item.height);
 
 			this.totalLenghtOfRoad += item.length;
-			this.addSegmentInMiniMap(item.curve,item.length)
+			this.addSegmentInMiniMap(item.curve, item.length)
 		});
 
 
@@ -40,7 +42,10 @@ class Road {
 		});
 	}
 
-	renderRoad(player, sprites, keyLeft, keyRight, enemies) {
+	renderRoad(player, sprites, enemies) {
+
+		let keyLeft = KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.LEFT];
+		let keyRight = KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.RIGHT];
 
 		let playerX = player.x;
 		let playerZ = player.z;
@@ -52,11 +57,11 @@ class Road {
 		var maxy = GAME_VARIABLES.CANVAS_HEIGHT;
 		var n, segment;
 
-		var basePercent = this.percentRemaining(player.position, GAME_VARIABLES.segmentLength);
+		var basePercent = percentRemaining(player.position, GAME_VARIABLES.segmentLength);
 		var dx = - (baseSegment.curve * basePercent), x = 0;
 
-		var playerPercent = this.percentRemaining(player.position + playerZ, GAME_VARIABLES.segmentLength);
-		var playerY = this.interpolate(baseSegment.p1.world.y, baseSegment.p2.world.y, playerPercent);
+		var playerPercent = percentRemaining(player.position + playerZ, GAME_VARIABLES.segmentLength);
+		var playerY = interpolate(baseSegment.p1.world.y, baseSegment.p2.world.y, playerPercent);
 
 		for (n = 0; n < GAME_VARIABLES.drawDistance; n++) {
 
@@ -92,7 +97,7 @@ class Road {
 				segment.p2.screen.x,
 				segment.p2.screen.y,
 				segment.p2.screen.w,
-				segment.color,sprites);
+				segment.color, sprites);
 
 			if (segment.index == 8) {
 				GAME_VARIABLES.ctx.fillStyle = 'white';
@@ -127,34 +132,108 @@ class Road {
 					}
 				}
 			}
+			// if(segment.sprites.length==0 && this.segments[(segment.index + 100) % this.segments.length].sprites.length==0){
+			// 	let objects=['GRASS_1','CACTUS_1','CACTUS_2'];
+			// 	// , { position: 600, sprite: 'GRASS_1', offset: 5.1 }
+			// 	let sprite=sprites[IMAGES[objects[Math.floor(Math.random()*2)]]];
+			// 	let spriteScale = segment.p1.screen.scale;
+			// 	let spriteX = segment.p1.screen.x + (spriteScale * 2.5 * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2);
+			// 	let spriteY = segment.p1.screen.y;
+
+			// 	let objCoordintaes = {
+			// 		x: 0,
+			// 		y: 0,
+			// 		width: 0,
+			// 		height: 0
+			// 	};
+			// 	renderSprite(sprite, spriteScale
+			// 		, spriteX, spriteY, (2.5 < 0 ? -1 : 0), -1, segment.clip, objCoordintaes);
+
+			// 	spriteX = segment.p1.screen.x + (spriteScale * -2.5 * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2);
+
+			// 	renderSprite(sprite, spriteScale
+			// 		, spriteX, spriteY, ((-2.5) < 0 ? -1 : 0), -1, segment.clip, objCoordintaes);
+			// 	// console.log('generate');
+			// }
 			for (let i = 0; i < enemies.length; i++) {
 
 				let enemySegment = this.findSegment(enemies[i].position + enemies[i].z);
+
+				// if (enemySegment == playerSegment) {
+				// 	if (player.checkCollisionWith(enemies[i].worldCoordinates)) {
+				// 		if (player.worldCoordinates.y >= enemies[i].worldCoordinates.y) {
+				// 			player.speed = 0;
+				// 		}
+				// 		else {
+				// 			enemies[i].speed = 0;
+				// 		}
+
+				// 	}
+				// }
 
 				if (segment == enemySegment) {
 					enemies[i].drawEnemy(enemySegment, sprites);
 				}
 
-				if (enemySegment == playerSegment) {
-					if (player.checkCollisionWith(enemies[i].worldCoordinates)) {
-						player.speed = 0;
-					}
-				}
 			}
 
 		}
+		console.log(player.currentPosition, enemies[0].currentPosition);
 		player.drawPlayer(sprites
-			, GAME_VARIABLES.speed * (keyLeft ? -1 : keyRight ? 1 : 0)
+			, (keyLeft ? -1 : keyRight ? 1 : 0)
 			, playerSegment.p2.world.y - playerSegment.p1.world.y
 			, GAME_VARIABLES.CANVAS_WIDTH / 2
 			, (GAME_VARIABLES.CANVAS_HEIGHT / 2)
 			- (GAME_VARIABLES.cameraDepth / playerZ
-				* this.interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent)
+				* interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent)
 				* GAME_VARIABLES.CANVAS_HEIGHT / 2)
 		);
+		if (player.x < -1.2 || player.x > 1.2) {
+			this.drawSand(player.worldCoordinates.x, player.worldCoordinates.y + player.worldCoordinates.height);
+			this.drawSand(player.worldCoordinates.x + player.worldCoordinates.width - 50
+				, player.worldCoordinates.y + player.worldCoordinates.height);
+
+		}
+
+
 	}
 
-	drawRoadSegment(x1, y1, w1, x2, y2, w2, color,sprites) {
+	drawSand(px, py) {
+
+		let COLOR_SAND_LIGHT = new Color(240, 191, 136);
+		let COLOR_SAND_DARK = new Color(101, 67, 33);
+		for (let i = 0; i < 100; i++) {
+			let x = Math.floor(Math.random() * 50);
+			let y = Math.floor(Math.random() * 50);
+			let particles;
+			if (i % 5 == 0) {
+				particles = new Particles(px + x, py + y, 1, COLOR_SAND_DARK.getRGBString(), 0, 1);
+				particles.draw();
+			}
+			else {
+				particles = new Particles(px + x, py + y, 10, COLOR_SAND_LIGHT.getRGBString(), 0, 1);
+				particles.draw();
+			}
+			this.sand.push(particles);
+		}
+
+		let interval = setInterval(() => {
+			for (let i = 0; i < this.sand.length; i++) {
+				this.sand[i].updatePosition();
+				// particles.draw();
+				this.sand[i].draw();
+				if (this.sand[i].a < 0) {
+					this.sand.splice(i, 1);
+				}
+			}
+			if (this.sand.length <= 0) {
+				clearInterval(interval);
+			}
+
+		}, 100);
+	}
+
+	drawRoadSegment(x1, y1, w1, x2, y2, w2, color, sprites) {
 
 		let lanes = GAME_VARIABLES.lanes;
 		let r1 = this.getRumbleWidth(w1, lanes),
@@ -166,8 +245,8 @@ class Road {
 		//Grass with full Canvas width
 		// GAME_VARIABLES.ctx.fillStyle = color.grass;
 		// GAME_VARIABLES.ctx.fillRect(0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
-		let ground=sprites[IMAGES.DESERT_GROUND];
-		GAME_VARIABLES.ctx.drawImage(ground,0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
+		let ground = sprites[IMAGES.DESERT_GROUND];
+		GAME_VARIABLES.ctx.drawImage(ground, 0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
 
 		this.drawPolygon(x1 - w1 - r1, y1, x1 - w1, y1, x2 - w2, y2, x2 - w2 - r2, y2, color.rumble);
 		this.drawPolygon(x1 + w1 + r1, y1, x1 + w1, y1, x2 + w2, y2, x2 + w2 + r2, y2, color.rumble);
@@ -235,25 +314,25 @@ class Road {
 	addSegmentInMiniMap(curve) {
 		this.miniMapCtxt.beginPath();
 		this.miniMapCtxt.moveTo(this.miniMapX, this.miniMapY);
-		
-		this.miniMapX+=0.1;
-		this.miniMapY-=curve;
-		
+
+		this.miniMapX += 0.1;
+		this.miniMapY -= curve;
+
 		this.miniMapCtxt.lineTo(this.miniMapX, this.miniMapY);
 		this.miniMapCtxt.stroke();
 	}
 
-	drawMiniMap() {
-		// GAME_VARIABLES.ctx.drawImage(IMAGES_SRC[0],0,0);
-		// console.log(this.miniMapCanvas);
-		// this.miniMapCtxt.beginPath();
-		// this.miniMapCtxt.moveTo(0,0);
-		// this.miniMapCtxt.lineTo(50,50);
-		// this.miniMapCtxt.stroke();
-		GAME_VARIABLES.ctx.drawImage(this.miniMapCanvas,10,10);
+	// drawMiniMap() {
+	// 	// GAME_VARIABLES.ctx.drawImage(IMAGES_SRC[0],0,0);
+	// 	// console.log(this.miniMapCanvas);
+	// 	// this.miniMapCtxt.beginPath();
+	// 	// this.miniMapCtxt.moveTo(0,0);
+	// 	// this.miniMapCtxt.lineTo(50,50);
+	// 	// this.miniMapCtxt.stroke();
+	// 	GAME_VARIABLES.ctx.drawImage(this.miniMapCanvas, 10, 10);
 
-		// console.log('here')
-	}
+	// 	// console.log('here')
+	// }
 
 	getRumbleWidth(projectedRoadWidth, lanes) {
 		return projectedRoadWidth / Math.max(6, 2 * lanes);
@@ -286,6 +365,12 @@ class Road {
 		p.screen.w = Math.round((p.screen.scale * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2));
 	}
 
+	calculateDistance(x1, y1, x2, y2) {
+		let dx = x2 - x1;
+		let dy = y2 - y1;
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+
 	lastY() {
 		return (this.segments.length == 0) ? 0 : this.segments[this.segments.length - 1].p2.world.y;
 	}
@@ -294,13 +379,6 @@ class Road {
 		return this.segments[Math.floor(z / GAME_VARIABLES.segmentLength) % this.segments.length];
 	}
 
-	percentRemaining(n, total) {
-		return (n % total) / total;
-	}
-
-	interpolate(a, b, percent) {
-		return a + (b - a) * percent;
-	}
 
 	easeIn(a, b, percent) {
 		return a + (b - a) * Math.pow(percent, 2);

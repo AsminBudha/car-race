@@ -12,14 +12,15 @@ class Car {
     this.DECCEL = 1;
     this.NO_ACCEL = -1;
     this.crossFinish = false;
-    this.currentPosition=0;
+    this.currentPosition = 0;
+    // console.log(offset);
   }
 
   updatePosition(dt, totalTrackLength) {
 
     this.position = this.position + (dt * this.speed);
 
-    this.currentPosition+=(dt*this.speed);
+    this.currentPosition += (dt * this.speed);
 
     if (this.currentPosition > totalTrackLength) {
       this.crossFinish = true;
@@ -68,36 +69,35 @@ class Car {
       if (this.speed > GAME_VARIABLES.offRoadLimit) {
         this.accelerate(GAME_VARIABLES.offRoadDecel, dt);
       }
-      else if(this.speed<0 && this.speed<-GAME_VARIABLES.offRoadLimit/6){
-        console.log(this.speed,-GAME_VARIABLES.offRoadLimit,-GAME_VARIABLES.offRoadDecel);
-        this.accelerate(-GAME_VARIABLES.offRoadDecel*2.5,dt);
-        console.log('next',this.speed);
+      else if (this.speed < 0 && this.speed < -GAME_VARIABLES.offRoadLimit / 6) {
+        console.log(this.speed, -GAME_VARIABLES.offRoadLimit, -GAME_VARIABLES.offRoadDecel);
+        this.accelerate(-GAME_VARIABLES.offRoadDecel * 2.5, dt);
+        console.log('next', this.speed);
       }
     }
 
     if (!accel == this.DECCEL) {
       this.speed = Math.max(0, Math.min(this.speed, maxSpeed)); // or exceed maxSpeed
     }
-    else if(accel==this.DECCEL){
+    else if (accel == this.DECCEL) {
       this.speed = Math.max(this.speed, maxSpeed);
     }
 
   }
 
-  checkCollisionWith(playerOffset, playerWidth, objOffset, objWidth) {
-
-    var half = 0.5;
-
-    let x = playerOffset - (playerWidth * half);
-    let xW = playerOffset + (playerWidth * half);
-    let objX = objOffset - (objWidth * half);
-    let objXW = objOffset + (objWidth * half);
-
-    if ((x >= objX && x <= objXW)
-      || (xW >= objX && xW <= objXW))
-      return true;
+  checkCollisionWith(objCoordinates) {
+    // console.log(this.worldCoordinates, objCoordinates);
+    if (this.worldCoordinates != null && objCoordinates != null) {
+      if ((this.worldCoordinates.x >= objCoordinates.x
+        && this.worldCoordinates.x <= objCoordinates.x + objCoordinates.width)
+        || (this.worldCoordinates.x + this.worldCoordinates.width >= objCoordinates.x
+          && this.worldCoordinates.x + this.worldCoordinates.width <= objCoordinates.x + objCoordinates.width)) {
+        return true;
+      }
+    }
     return false;
   }
+
   accelerate(accel, dt) {
     this.speed += accel * dt;
   }

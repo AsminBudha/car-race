@@ -48,22 +48,26 @@ let CAR = {
 
 let IMAGES = {
 	PLAYER_LEFT: 0
-	,PLAYER_RIGHT: 1
-	,PLAYER_STRAIGHT: 2
-	,PLAYER_UPHILL_LEFT: 3
-	,PLAYER_UPHILL_RIGHT: 4
-	,PLAYER_UPHILL_STRAIGHT: 5
-	,COUNTDOWN_3: 6
-	,COUNTDOWN_2: 7
-	,COUNTDOWN_1: 8
-	,COUNTDOWN_GO: 9
-	,TREE_1: 10
-	,BACKGROUND: 11
-	,PLAYER_STEER_STILL:12
-	,PLAYER_STEER_LEFT:13
-	,PLAYER_STEER_RIGHT:14
-	,DESERT_GROUND:15
-	,DESERT_STONE:16
+	, PLAYER_RIGHT: 1
+	, PLAYER_STRAIGHT: 2
+	, PLAYER_UPHILL_LEFT: 3
+	, PLAYER_UPHILL_RIGHT: 4
+	, PLAYER_UPHILL_STRAIGHT: 5
+	, COUNTDOWN_3: 6
+	, COUNTDOWN_2: 7
+	, COUNTDOWN_1: 8
+	, COUNTDOWN_GO: 9
+	, CACTUS_1: 10
+	, BACKGROUND: 11
+	, PLAYER_STEER_STILL: 12
+	, PLAYER_STEER_LEFT: 13
+	, PLAYER_STEER_RIGHT: 14
+	, DESERT_GROUND: 15
+	, DESERT_STONE: 16
+	, ENEMY_1_STRAIGHT: 17
+	, CACTUS_2: 18
+	, STONE_1: 19
+	, GRASS_1: 20
 };
 
 let IMAGES_SRC = [
@@ -77,13 +81,17 @@ let IMAGES_SRC = [
 	, 'img/countdown/2.png'
 	, 'img/countdown/1.png'
 	, 'img/countdown/go.png'
-	, 'img/column.png'
-	, 'img/background/background.png'
-	,'img/player/steer_still.png'
-	,'img/player/steer_left.png'
-	,'img/player/steer_right.png'
-	,'img/background/desert-ground.png'
-	,'img/desert-stone.png'];
+	, 'img/cactus1.png'
+	, 'img/background/desert_BG.png'//background.png'
+	, 'img/player/steer_still.png'
+	, 'img/player/steer_left.png'
+	, 'img/player/steer_right.png'
+	, 'img/background/desert-ground.png'
+	, 'img/desert-stone.png'
+	, 'img/player/jaguar-straight.png'
+	, 'img/cactus2.png'
+	, 'img/stone1.png'
+	, 'img/grass1.png'];
 
 const writeText = (ctx, x, y, text, font, color) => {
 	ctx.font = font;
@@ -119,3 +127,48 @@ const renderSprite = function (sprite, scale, destX, destY, offsetX, offsetY, cl
 		worldObj.height = destH - clipH;
 	}
 };
+
+let KEY_PRESSED_FLAGS = [
+	false
+	, false
+	, false
+	, false
+	, false
+	, false
+];
+
+let KEY_PRESSED_INDEX = {
+	LEFT: 0
+	, UP: 1
+	, RIGHT: 2
+	, DOWN: 3
+	, N: 4
+	, V: 5
+	, SPACE: 3
+	, A: 0
+	, W: 1
+	, D: 2
+	, S: 3
+};
+
+let KEY_PRESSED_CODE = {
+	LEFT: 37
+	, UP: 38
+	, RIGHT: 39
+	, DOWN: 40
+	, N: 78
+	, V: 86
+	, SPACE: 32
+	, W: 87
+	, A: 65
+	, S: 83
+	, D: 68
+};
+
+function percentRemaining(n, total) {
+	return (n % total) / total;
+}
+
+function interpolate(a, b, percent) {
+	return a + (b - a) * percent;
+}
