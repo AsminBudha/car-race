@@ -20,13 +20,13 @@ class Player extends Car {
 
 		if (!KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]) {
 			if (steer < 0) {
-				sprite = (updown > 0) ? sprites[IMAGES.PLAYER_UPHILL_LEFT] : sprites[IMAGES.PLAYER_LEFT];
+				sprite = sprites[IMAGES.PLAYER_LEFT];
 			}
 			else if (steer > 0) {
-				sprite = (updown > 0) ? sprites[IMAGES.PLAYER_UPHILL_RIGHT] : sprites[IMAGES.PLAYER_RIGHT];
+				sprite = sprites[IMAGES.PLAYER_RIGHT];
 			}
 			else {
-				sprite = (updown > 0) ? sprites[IMAGES.PLAYER_UPHILL_STRAIGHT] : sprites[IMAGES.ENEMY_1_STRAIGHT];
+				sprite = sprites[IMAGES.PLAYER_STRAIGHT];
 			}
 
 			renderSprite(sprite, GAME_VARIABLES.cameraDepth / this.z, destX, destY, this.playerOffset, this.playerY, 0, this.worldCoordinates);

@@ -178,7 +178,7 @@ class Road {
 			}
 
 		}
-		console.log(player.currentPosition, enemies[0].currentPosition);
+		// console.log(player.currentPosition, enemies[0].currentPosition);
 		player.drawPlayer(sprites
 			, (keyLeft ? -1 : keyRight ? 1 : 0)
 			, playerSegment.p2.world.y - playerSegment.p1.world.y
@@ -376,7 +376,7 @@ class Road {
 	}
 
 	findSegment(z) {
-		return this.segments[Math.floor(z / GAME_VARIABLES.segmentLength) % this.segments.length];
+		return this.segments[(Math.floor(z / GAME_VARIABLES.segmentLength)) % this.segments.length];
 	}
 
 

@@ -41,13 +41,13 @@ class Enemy extends Car {
     let sprite;
 
     if (steer < 0) {
-      sprite = (isUP > 0) ? sprites[IMAGES.PLAYER_UPHILL_LEFT] : sprites[IMAGES.PLAYER_LEFT];
+      sprite = sprites[IMAGES.CAR_2_RIGHT];
     }
     else if (steer > 0) {
-      sprite = (isUP > 0) ? sprites[IMAGES.PLAYER_UPHILL_RIGHT] : sprites[IMAGES.PLAYER_RIGHT];
+      sprite = sprites[IMAGES.CAR_2_LEFT];
     }
     else {
-      sprite = (isUP > 0) ? sprites[IMAGES.PLAYER_UPHILL_STRAIGHT] : sprites[IMAGES.PLAYER_STRAIGHT];
+      sprite = sprites[IMAGES.CAR_2_STRAIGHT];
     }
 
     renderSprite(sprite, enemyScale

@@ -68,12 +68,16 @@ let IMAGES = {
 	, CACTUS_2: 18
 	, STONE_1: 19
 	, GRASS_1: 20
+	,NOS:21
+	,CAR_2_STRAIGHT:22
+	,CAR_2_LEFT:23
+	,CAR_2_RIGHT:24
 };
 
 let IMAGES_SRC = [
-	'img/player/player_left.png'
-	, 'img/player/player_right.png'
-	, 'img/player/player_straight.png'
+	'img/player/car1_left.png'
+	, 'img/player/car1_right.png'
+	, 'img/player/car1_straight.png'
 	, 'img/player/player_uphill_left.png'
 	, 'img/player/player_uphill_right.png'
 	, 'img/player/player_uphill_straight.png'
@@ -82,16 +86,20 @@ let IMAGES_SRC = [
 	, 'img/countdown/1.png'
 	, 'img/countdown/go.png'
 	, 'img/cactus1.png'
-	, 'img/background/desert_BG.png'//background.png'
+	, 'img/background/desert_BG.png'
 	, 'img/player/steer_still.png'
 	, 'img/player/steer_left.png'
 	, 'img/player/steer_right.png'
 	, 'img/background/desert-ground.png'
 	, 'img/desert-stone.png'
-	, 'img/player/jaguar-straight.png'
+	, 'img/player/car1_straight.png'
 	, 'img/cactus2.png'
 	, 'img/stone1.png'
-	, 'img/grass1.png'];
+	, 'img/grass1.png'
+	,'img/nos.png'
+	,'img/player/car2-straight.png'
+	,'img/player/car2-left.png'
+	,'img/player/car2-right.png'];
 
 const writeText = (ctx, x, y, text, font, color) => {
 	ctx.font = font;

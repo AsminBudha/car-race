@@ -1,19 +1,8 @@
 let container = document.getElementsByTagName('div')[0];
 var startsound = new Audio('./music/bg-music.mp3');
-// var startsound = new Audio('../music/123.mp3');
-
 setTimeout(() => {
-  app();
-  }, 0);
-
-app = function(){
-  play();
-  setTimeout(app,0 );
-}  
-
-play = function(){
   startsound.play();
-}
+}, 0);
 
 width = window.innerWidth - 50 || document.body.clientWidth - 50;
 height = window.innerHeight || document.body.clientHeight;
