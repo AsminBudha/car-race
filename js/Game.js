@@ -17,6 +17,8 @@ class Game {
 		this.timer = 0;
 
 		this.road = new Road();
+		this.road.initObstacles(this.sprites);
+
 		this.player = new Player();
 		this.enemies = [];
 		for (let i = 0; i < 4; i++) {
@@ -35,7 +37,7 @@ class Game {
 		let totalImg = 0;
 		let onLoad = () => {
 			totalImg++;
-			if (totalImg == IMAGES_SRC.length) {
+			if (totalImg >= IMAGES_SRC.length) {
 				document.addEventListener('keydown', this.keyDownHandler, true);
 				document.addEventListener('keyup', this.keyUpHandler, true);
 
@@ -43,7 +45,6 @@ class Game {
 				this.gdt = 0;
 				this.countdown = -1;
 
-				this.road.initObstacles(this.sprites);
 
 				this.frame();
 			}
