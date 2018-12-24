@@ -1,22 +1,8 @@
 class Road {
 
 	constructor() {
-		this.totalLenghtOfRoad = 0;
 		this.segments = [];
 
-		this.miniMapW = 500;
-		this.miniMapH = 300;
-		this.miniMapX = 2;
-		this.miniMapY = this.miniMapH / 2;
-		this.miniMapCanvas = document.createElement('canvas');
-		this.miniMapCanvas.width = this.miniMapW;
-		this.miniMapCanvas.height = this.miniMapH
-		this.miniMapDdx = 0;
-		this.miniMapDx = 0;
-
-		this.miniMapCtxt = this.miniMapCanvas.getContext('2d');
-		this.miniMapCtxt.fillStyle = 'yellow';
-		this.miniMapCtxt.fillRect(0, 0, this.miniMapW, this.miniMapH)
 		this.initSegment();
 
 		this.sand = [];
@@ -29,8 +15,6 @@ class Road {
 
 			this.addRoad(length, length, length, item.curve, item.height);
 
-			this.totalLenghtOfRoad += item.length;
-			this.addSegmentInMiniMap(item.curve, item.length)
 		});
 
 
@@ -49,7 +33,7 @@ class Road {
 
 		let playerX = player.x;
 		let playerZ = player.z;
-		
+
 		let playerSegment = this.findSegment(player.position + playerZ);
 
 		player.playerX = player.x - (playerSegment.curve * GAME_VARIABLES.centrifugal);
@@ -88,7 +72,7 @@ class Road {
 			dx += segment.curve;
 
 			if ((segment.p1.camera.z <= GAME_VARIABLES.cameraDepth) || // behind us
-				(segment.p2.screen.y >= segment.p1.screen.y) || // back face cull
+				(segment.p2.screen.y >= segment.p1.screen.y) ||
 				(segment.p2.screen.y >= maxy))                  // clip by (already rendered) segment
 				continue;
 
@@ -126,18 +110,13 @@ class Road {
 				renderSprite(sprite.sprite, spriteScale
 					, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip, objCoordintaes);
 
-				if (segment.index == playerSegment.index + 1) {
+				if (segment.index == playerSegment.index) {
 
 					if (player.checkCollisionWith(objCoordintaes)) {
 						player.speed = 0;
 					}
 				}
 			}
-			// console.log('enemies',segment.enemies.length);
-			// for(let i=0;i<segment.enemies.length;i++){
-				
-			// 	enemies[i].drawEnemy(segment, sprites);
-			// }
 			for (let i = 0; i < enemies.length; i++) {
 
 				let enemySegment = this.findSegment(enemies[i].position + enemies[i].z);
@@ -149,10 +128,9 @@ class Road {
 			}
 
 		}
-		// console.log(player.currentPosition, enemies[0].currentPosition);
+
 		player.drawPlayer(sprites
 			, (keyLeft ? -1 : keyRight ? 1 : 0)
-			, playerSegment.p2.world.y - playerSegment.p1.world.y
 			, GAME_VARIABLES.CANVAS_WIDTH / 2
 			, (GAME_VARIABLES.CANVAS_HEIGHT / 2)
 			- (GAME_VARIABLES.cameraDepth / playerZ
@@ -171,7 +149,7 @@ class Road {
 
 	drawSand(px, py) {
 
-		if(KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]){
+		if (KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]) {
 			return;
 		}
 
@@ -195,7 +173,6 @@ class Road {
 		let interval = setInterval(() => {
 			for (let i = 0; i < this.sand.length; i++) {
 				this.sand[i].updatePosition();
-				// particles.draw();
 				this.sand[i].draw();
 				if (this.sand[i].a < 0) {
 					this.sand.splice(i, 1);
@@ -218,8 +195,6 @@ class Road {
 		let lanew1, lanew2, lanex1, lanex2, lane;
 
 		//Grass with full Canvas width
-		// GAME_VARIABLES.ctx.fillStyle = color.grass;
-		// GAME_VARIABLES.ctx.fillRect(0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
 		let ground = sprites[IMAGES.DESERT_GROUND];
 		GAME_VARIABLES.ctx.drawImage(ground, 0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
 
@@ -247,16 +222,13 @@ class Road {
 		for (n = 0; n < enter; n++) {
 			let tempCurve = this.easeIn(0, curve, n / enter);
 			this.addSegment(tempCurve, this.easeInOut(startY, endY, n / total));
-			this.addSegmentInMiniMap(tempCurve);
 		}
 		for (n = 0; n < hold; n++) {
 			this.addSegment(curve, this.easeInOut(startY, endY, (enter + n) / total));
-			this.addSegmentInMiniMap(curve);
 		}
 		for (n = 0; n < leave; n++) {
 			let tempCurve = this.easeInOut(curve, 0, n / leave);
 			this.addSegment(tempCurve, this.easeInOut(startY, endY, (enter + hold + n) / total));
-			this.addSegmentInMiniMap(-tempCurve);
 		}
 	}
 
@@ -276,7 +248,7 @@ class Road {
 			},
 			curve: curve,
 			sprites: [],
-			enemies:[],
+			enemies: [],
 			'color': {
 				'road': GAME_VARIABLES.COLOR.ROAD,
 				'grass': Math.floor(index / GAME_VARIABLES.rumbleLength) & 1 ? GAME_VARIABLES.COLOR.GRASS_DARK : GAME_VARIABLES.COLOR.GRASS_LIGHT,
@@ -285,29 +257,6 @@ class Road {
 			}
 		});
 	}
-
-	addSegmentInMiniMap(curve) {
-		this.miniMapCtxt.beginPath();
-		this.miniMapCtxt.moveTo(this.miniMapX, this.miniMapY);
-
-		this.miniMapX += 0.1;
-		this.miniMapY -= curve;
-
-		this.miniMapCtxt.lineTo(this.miniMapX, this.miniMapY);
-		this.miniMapCtxt.stroke();
-	}
-
-	// drawMiniMap() {
-	// 	// GAME_VARIABLES.ctx.drawImage(IMAGES_SRC[0],0,0);
-	// 	// console.log(this.miniMapCanvas);
-	// 	// this.miniMapCtxt.beginPath();
-	// 	// this.miniMapCtxt.moveTo(0,0);
-	// 	// this.miniMapCtxt.lineTo(50,50);
-	// 	// this.miniMapCtxt.stroke();
-	// 	GAME_VARIABLES.ctx.drawImage(this.miniMapCanvas, 10, 10);
-
-	// 	// console.log('here')
-	// }
 
 	getRumbleWidth(projectedRoadWidth, lanes) {
 		return projectedRoadWidth / Math.max(6, 2 * lanes);
@@ -353,7 +302,6 @@ class Road {
 	findSegment(z) {
 		return this.segments[(Math.floor(z / GAME_VARIABLES.segmentLength)) % this.segments.length];
 	}
-
 
 	easeIn(a, b, percent) {
 		return a + (b - a) * Math.pow(percent, 2);

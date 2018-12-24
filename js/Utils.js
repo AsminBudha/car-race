@@ -43,7 +43,7 @@ GAME_VARIABLES.offRoadLimit = GAME_VARIABLES.maxSpeed / 4;
 
 let CAR = {
 	width: 80
-	, height: 40 //let car moves from 0 to 100 kph in 5 secs
+	, height: 40
 };
 
 let IMAGES = {
@@ -99,7 +99,8 @@ let IMAGES_SRC = [
 	, 'img/nos.png'
 	, 'img/player/car2-straight.png'
 	, 'img/player/car2-left.png'
-	, 'img/player/car2-right.png'];
+	, 'img/player/car2-right.png'
+];
 
 const writeText = (ctx, x, y, text, font, color) => {
 	ctx.font = font;

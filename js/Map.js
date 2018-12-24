@@ -1,6 +1,6 @@
 //Map of track better give length in divisble of 3
 let trackMap = [
-	{ type: 'straight', length: 300, curve: 0, height: 0 },
+	{ type: 'straight', length: 600, curve: 0, height: 0 },
 	{ type: 'straight', length: 60, curve: 0, height: 10 },
 	{ type: 'straight', length: 300, curve: 0, height: -10 },
 	{ type: 'straight', length: 300, curve: 0, height: 0 },
@@ -83,4 +83,31 @@ let spritesObstacles = [
 	, { position: 1650, sprite: 'GRASS_1', offset: 4.7 }
 	, { position: 1740, sprite: 'GRASS_1', offset: 4.9 }
 	, { position: 1850, sprite: 'GRASS_1', offset: 4.7 }
+	, { position: 1950, sprite: 'CACTUS_2', offset: -2 }
+	, { position: 2000, sprite: 'CACTUS_1', offset: -2 }
+	, { position: 2150, sprite: 'STONE_1', offset: 1.5 }
+	, { position: 2200, sprite: 'GRASS_1', offset: 1.6 }
+	, { position: 2350, sprite: 'GRASS_1', offset: 1.4 }
+	, { position: 2380, sprite: 'CACTUS_1', offset: -1.5 }
+	, { position: 2400, sprite: 'CACTUS_2', offset: 1.5 }
+	, { position: 2550, sprite: 'CACTUS_1', offset: 5 }
+	, { position: 2540, sprite: 'STONE_1', offset: -5 }
+	, { position: 2650, sprite: 'STONE_1', offset: -2 }
+	, { position: 2300, sprite: 'STONE_1', offset: 5 }
+	, { position: 2710, sprite: 'CACTUS_1', offset: -2 }
+	, { position: 2840, sprite: 'CACTUS_2', offset: -2 }
+	, { position: 2910, sprite: 'CACTUS_2', offset: -2 }
+	, { position: 3040, sprite: 'CACTUS_1', offset: -2 }
+	, { position: 3150, sprite: 'STONE_1', offset: 1.5 }
+	, { position: 3250, sprite: 'GRASS_1', offset: 1.6 }
+	, { position: 3350, sprite: 'GRASS_1', offset: 1.4 }
+	, { position: 3480, sprite: 'CACTUS_1', offset: -1.5 }
+	, { position: 3500, sprite: 'CACTUS_2', offset: 1.5 }
+	, { position: 3650, sprite: 'CACTUS_1', offset: 5 }
+	, { position: 3640, sprite: 'STONE_1', offset: -5 }
+	, { position: 3350, sprite: 'STONE_1', offset: -2 }
+	, { position: 3400, sprite: 'STONE_1', offset: 5 }
+	, { position: 3210, sprite: 'CACTUS_1', offset: -2 }
+	, { position: 3240, sprite: 'CACTUS_2', offset: -2 }
+
 ];

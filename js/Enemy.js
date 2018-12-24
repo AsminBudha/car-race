@@ -9,7 +9,6 @@ class Enemy extends Car {
       height: 0
     };
 
-    // console.log(offset);
     this.accel = GAME_VARIABLES.maxSpeed / Math.floor(Math.random() * 10 + 4);
     this.maxSpeed = GAME_VARIABLES.segmentLength / (Math.floor(Math.random() * 4 + 1) * GAME_VARIABLES.step);
 
@@ -21,13 +20,6 @@ class Enemy extends Car {
     let enemyX = enemySegment.p1.screen.x
       + (enemyScale * this.playerOffset * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2);
     let enemyY = enemySegment.p1.screen.y;
-    let enemyPercent = percentRemaining(this.position, GAME_VARIABLES.segmentLength);
-
-    // enemyY = enemyY
-    //   - (GAME_VARIABLES.cameraDepth / this.z
-    //     * interpolate(enemySegment.p1.camera.y, enemySegment.p2.camera.y, enemyPercent)
-    //     * enemyY);
-    // let isUP = enemySegment.p1.world.y != 0;
 
     let steer = 0;
     if (enemySegment.curve > 0) {
@@ -57,11 +49,9 @@ class Enemy extends Car {
 
     this.updatePosition(dt, totalTrackLength);
 
-    // console.log('accel', this.accel);
     if (this.crossFinish) {
       if (this.speed > 0)
         this.updateSpeed(this.NO_ACCEL, dt, GAME_VARIABLES.decel, this.maxSpeed);
-      // console.log('speed', this.speed);
     }
     else {
       this.updateSpeed(this.ACCEL, dt, this.accel, this.maxSpeed);
