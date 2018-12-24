@@ -1,7 +1,7 @@
 let GAME_VARIABLES = {
 	//For Canvas
-	CANVAS_WIDTH: window.innerWidth - 100 || document.body.clientWidth - 100,
-	CANVAS_HEIGHT: window.innerHeight - 100 || document.body.clientHeight - 100,
+	CANVAS_WIDTH: window.innerWidth - 10 || document.body.clientWidth - 10,
+	CANVAS_HEIGHT: window.innerHeight - 10 || document.body.clientHeight - 10,
 	canvas: document.getElementById('canvas'),
 	ctx: canvas.getContext('2d'),
 
@@ -10,7 +10,7 @@ let GAME_VARIABLES = {
 	cameraDepth: 0.8,//null;// z distance camera is from screen (computed) calculated using d=1/tan(fav/2)
 	resolution: null,
 	//For Track
-	segmentLength: 200,
+	segmentLength: 300,
 	rumbleLength: 3,
 	drawDistance: 300,
 	roadWidth: 2000,
@@ -68,10 +68,10 @@ let IMAGES = {
 	, CACTUS_2: 18
 	, STONE_1: 19
 	, GRASS_1: 20
-	,NOS:21
-	,CAR_2_STRAIGHT:22
-	,CAR_2_LEFT:23
-	,CAR_2_RIGHT:24
+	, NOS: 21
+	, CAR_2_STRAIGHT: 22
+	, CAR_2_LEFT: 23
+	, CAR_2_RIGHT: 24
 };
 
 let IMAGES_SRC = [
@@ -87,7 +87,7 @@ let IMAGES_SRC = [
 	, 'img/countdown/go.png'
 	, 'img/cactus1.png'
 	, 'img/background/desert_BG.png'
-	, 'img/player/steer_still.png'
+	, 'img/player/steer_straight.png'
 	, 'img/player/steer_left.png'
 	, 'img/player/steer_right.png'
 	, 'img/background/desert-ground.png'
@@ -96,10 +96,10 @@ let IMAGES_SRC = [
 	, 'img/cactus2.png'
 	, 'img/stone1.png'
 	, 'img/grass1.png'
-	,'img/nos.png'
-	,'img/player/car2-straight.png'
-	,'img/player/car2-left.png'
-	,'img/player/car2-right.png'];
+	, 'img/nos.png'
+	, 'img/player/car2-straight.png'
+	, 'img/player/car2-left.png'
+	, 'img/player/car2-right.png'];
 
 const writeText = (ctx, x, y, text, font, color) => {
 	ctx.font = font;
@@ -127,7 +127,8 @@ const renderSprite = function (sprite, scale, destX, destY, offsetX, offsetY, cl
 	var clipH = clipY ? Math.max(0, destY + destH - clipY) : 0;
 
 	if (clipH < destH) {
-		GAME_VARIABLES.ctx.drawImage(sprite, destX, destY, destW, destH - clipH);
+		GAME_VARIABLES.ctx.drawImage(sprite, 0, 0, sprite.width
+			, sprite.height - (sprite.height * clipH / destH), destX, destY, destW, destH - clipH);
 
 		worldObj.x = destX;
 		worldObj.y = destY;

@@ -10,7 +10,7 @@ class Game {
 		gameThat = this;
 
 		this.keyPressedFlags = [false, false, false, false];//LEFT , UP , RIGHT , DOWN
-		this.nitroPressed=false;
+		this.nitroPressed = false;
 	}
 
 	start() {
@@ -21,7 +21,10 @@ class Game {
 		this.enemies = [];
 		for (let i = 0; i < 4; i++) {
 
-			this.enemies.push(new Enemy(0.5, -1, i & 1 ? -0.2 : 0.2, 5 + 3 * i));
+			let z=5 + 3 * i;
+			this.enemies.push(new Enemy(0.5, -1, i & 1 ? -0.2 : 0.2, z));
+			let enemySegment=this.road.findSegment(z);
+			enemySegment.enemies.push(this.enemies[i]);
 		}
 		this.sprites = [];
 
@@ -61,7 +64,7 @@ class Game {
 		if (gameThat.countdown > 3) {
 
 			if (gameThat.player.crossFinish) {
-				for(let i=0;i<KEY_PRESSED_FLAGS.length;i++)
+				for (let i = 0; i < KEY_PRESSED_FLAGS.length; i++)
 					KEY_PRESSED_FLAGS[i] = false;
 			}
 
@@ -81,9 +84,9 @@ class Game {
 
 			gameThat.drawBackground();
 			gameThat.road.renderRoad(gameThat.player, gameThat.sprites, gameThat.enemies);
-			gameThat.player.drawNitro();
+			// gameThat.player.drawNitro();
 
-			gameThat.player.drawSpeed();
+			// gameThat.player.drawSpeed();
 			gameThat.updatePlayerPosition();
 
 			gameThat.last = now;
@@ -92,7 +95,7 @@ class Game {
 
 			if (gameThat.countdown == -1) {
 				gameThat.drawBackground();
-				gameThat.road.renderRoad(gameThat.player, gameThat.sprites , gameThat.enemies);
+				gameThat.road.renderRoad(gameThat.player, gameThat.sprites, gameThat.enemies);
 
 				gameThat.player.drawSpeed();
 				gameThat.updatePlayerPosition();
@@ -101,7 +104,7 @@ class Game {
 				gameThat.countdown++;
 				if (gameThat.countdown <= 3) {
 					gameThat.drawCountDown(gameThat.countdown);
-					
+
 				}
 				gameThat.last = now;
 			}
@@ -109,6 +112,7 @@ class Game {
 
 		if (gameThat.player.crossFinish && gameThat.player.speed == 0) {
 			gameThat.showFinishPosition();
+			console.log('Finish')
 			return;
 		}
 		requestAnimationFrame(gameThat.frame);
@@ -126,15 +130,15 @@ class Game {
 			gameOverText = 'You Lose';
 			positionText = 'Your Position is ' + gameThat.player.lastPosition;
 		}
-		GAME_VARIABLES.ctx.font = '48px serif';
+		GAME_VARIABLES.ctx.font = '48px Press Start';
 		GAME_VARIABLES.ctx.shadowBlur = 4;
 		GAME_VARIABLES.ctx.shadowColor = 'rgba(0,0,0,0.8)';
 		GAME_VARIABLES.ctx.shadowOffsetX = 3;
 		GAME_VARIABLES.ctx.shadowOffsetY = 3;
 		GAME_VARIABLES.ctx.fillStyle = 'white';
-		GAME_VARIABLES.ctx.fillText(gameOverText, GAME_VARIABLES.CANVAS_WIDTH / 2 - 100, 100);
-		GAME_VARIABLES.ctx.font = '40px serif';
-		GAME_VARIABLES.ctx.fillText(positionText, GAME_VARIABLES.CANVAS_WIDTH / 2 - 150, 200);
+		GAME_VARIABLES.ctx.fillText(gameOverText, GAME_VARIABLES.CANVAS_WIDTH * 0.3, 100);
+		GAME_VARIABLES.ctx.font = '40px Press Start';
+		GAME_VARIABLES.ctx.fillText(positionText, GAME_VARIABLES.CANVAS_WIDTH * 0.25, 200);
 	}
 	updatePlayerPosition() {
 		if (!gameThat.player.crossFinish) {
@@ -198,7 +202,7 @@ class Game {
 
 				}
 			}
-		}
+}
 	}
 
 	update(dt) {
@@ -211,7 +215,7 @@ class Game {
 			, playerSegment
 			, totalTrackLength
 			, gameThat.keyPressedFlags
-			,gameThat.nitroPressed);
+			, gameThat.nitroPressed);
 
 		if (playerSegment.curve > 0 && gameThat.player.speed) {
 			gameThat.updateBackground(true);
@@ -241,43 +245,73 @@ class Game {
 
 	keyDownHandler(e) {
 		//arrow key ranges from 37-40 with 37=LEFT in clockwise
-		if(e.keyCode>=KEY_PRESSED_CODE.LEFT && e.keyCode<=KEY_PRESSED_CODE.DOWN){
-			if (!gameThat.player.crossFinish){
+
+		if (e.keyCode >= KEY_PRESSED_CODE.LEFT && e.keyCode <= KEY_PRESSED_CODE.DOWN) {
+			if (!gameThat.player.crossFinish) {
 				// gameThat.keyPressedFlags[e.keyCode - 37] = true;
-				KEY_PRESSED_FLAGS[e.keyCode-KEY_PRESSED_CODE.LEFT]=true;
+				KEY_PRESSED_FLAGS[e.keyCode - KEY_PRESSED_CODE.LEFT] = true;
 			}
 			else {
 				// gameThat.keyPressedFlags[e.keyCode - 37] = false;
-				
-				KEY_PRESSED_FLAGS[e.keyCode-KEY_PRESSED_CODE.LEFT]=false;
+
+				KEY_PRESSED_FLAGS[e.keyCode - KEY_PRESSED_CODE.LEFT] = false;
 			}
 
 		}
-		else{
+		else {
 			// console.log('key',e.key);
 			switch (e.keyCode) {
 				case KEY_PRESSED_CODE.V:
-					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]=!KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V];
-					// gameThat.player.topView = !gameThat.player.topView;
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V] = !KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V];
 					break;
 				case KEY_PRESSED_CODE.N:
-					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N]=true;
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N] = true;
+					break;
+				case KEY_PRESSED_CODE.SPACE:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.SPACE] = true;
+					break;
+				case KEY_PRESSED_CODE.W:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.W] = true;
+					break;
+				case KEY_PRESSED_CODE.A:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.A] = true;
+					break;
+				case KEY_PRESSED_CODE.S:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.S] = true;
+					break;
+				case KEY_PRESSED_CODE.D:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.D] = true;
 					break;
 			}
 		}
-		
+
 	}
 
 	keyUpHandler(e) {
 		//arrow key ranges from 37-40 with 37=LEFT in clockwise
-		if(e.keyCode>=KEY_PRESSED_CODE.LEFT && e.keyCode<=KEY_PRESSED_CODE.DOWN){
-			KEY_PRESSED_FLAGS[e.keyCode-KEY_PRESSED_CODE.LEFT]=false;
+		if (e.keyCode >= KEY_PRESSED_CODE.LEFT && e.keyCode <= KEY_PRESSED_CODE.DOWN) {
+			KEY_PRESSED_FLAGS[e.keyCode - KEY_PRESSED_CODE.LEFT] = false;
 		}
-		else{
+		else {
 			// console.log('key',e.key);
 			switch (e.keyCode) {
 				case KEY_PRESSED_CODE.N:
-					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N]=false;
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N] = false;
+					break;
+				case KEY_PRESSED_CODE.SPACE:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.SPACE] = false;
+					break;
+				case KEY_PRESSED_CODE.W:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.W] = false;
+					break;
+				case KEY_PRESSED_CODE.A:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.A] = false;
+					break;
+				case KEY_PRESSED_CODE.S:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.S] = false;
+					break;
+				case KEY_PRESSED_CODE.D:
+					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.D] = false;
 					break;
 			}
 		}
@@ -293,5 +327,5 @@ class Game {
 
 }
 let gameThat = null;
-let game=new Game();
+let game = new Game();
 game.start();
