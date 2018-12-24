@@ -13,7 +13,6 @@ class Car {
     this.NO_ACCEL = -1;
     this.crossFinish = false;
     this.currentPosition = 0;
-    // console.log(offset);
   }
 
   updatePosition(dt, totalTrackLength) {
@@ -39,14 +38,14 @@ class Car {
     let speedPercent = this.speed / GAME_VARIABLES.maxSpeed;
     let dx = dt * 2 * speedPercent; // at top speed, should be able to cross from left to right (-1 to 1) in 1
 
-    if (dx == 0) {
-      if (dt < 0) {
-        dx = -0.008;
-      }
-      else {
-        dx = 0.008;
-      }
-    }
+    // if (dx == 0) {
+    //   if (dt < 0) {
+    //     dx = -0.008;
+    //   }
+    //   else {
+    //     dx = 0.008;
+    //   }
+    // }
 
     this.x = this.x + dx;
 
@@ -70,9 +69,8 @@ class Car {
         this.accelerate(GAME_VARIABLES.offRoadDecel, dt);
       }
       else if (this.speed < 0 && this.speed < -GAME_VARIABLES.offRoadLimit / 6) {
-        // console.log(this.speed, -GAME_VARIABLES.offRoadLimit, -GAME_VARIABLES.offRoadDecel);
         this.accelerate(-GAME_VARIABLES.offRoadDecel * 2.5, dt);
-        // console.log('next', this.speed);
+
       }
     }
 
@@ -86,7 +84,6 @@ class Car {
   }
 
   checkCollisionWith(objCoordinates) {
-    // console.log(this.worldCoordinates, objCoordinates);
     if (this.worldCoordinates != null && objCoordinates != null) {
       if ((this.worldCoordinates.x >= objCoordinates.x
         && this.worldCoordinates.x <= objCoordinates.x + objCoordinates.width)

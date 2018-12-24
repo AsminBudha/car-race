@@ -1,16 +1,10 @@
-
 class Game {
 
 	constructor() {
 		GAME_VARIABLES.canvas.height = GAME_VARIABLES.CANVAS_HEIGHT;
 		GAME_VARIABLES.canvas.width = GAME_VARIABLES.CANVAS_WIDTH;
 
-		this.position = 0;
-		this.firstPass = true;
 		gameThat = this;
-
-		this.keyPressedFlags = [false, false, false, false];//LEFT , UP , RIGHT , DOWN
-		this.nitroPressed = false;
 	}
 
 	start() {
@@ -21,9 +15,9 @@ class Game {
 		this.enemies = [];
 		for (let i = 0; i < 4; i++) {
 
-			let z=5 + 3 * i;
+			let z = 5 + 3 * i;
 			this.enemies.push(new Enemy(0.5, -1, i & 1 ? -0.2 : 0.2, z));
-			let enemySegment=this.road.findSegment(z);
+			let enemySegment = this.road.findSegment(z);
 			enemySegment.enemies.push(this.enemies[i]);
 		}
 		this.sprites = [];
@@ -69,24 +63,15 @@ class Game {
 			}
 
 
-
-			let dt = Math.min(1, (now - gameThat.last) / 1000); // using requestAnimationFrame have to be able to handle large delta's caused when it 'hibernates' in a background or non-visible tab
-			gameThat.gdt = gameThat.gdt + dt;
-			// while (gameThat.gdt > GAME_VARIABLES.step) {
-
-			// gameThat.gdt -= GAME_VARIABLES.step;
 			gameThat.updateEnemiesPosition();
 
 			gameThat.update(GAME_VARIABLES.step);
-			// }
 
 			GAME_VARIABLES.ctx.clearRect(0, 0, GAME_VARIABLES.CANVAS_WIDTH, GAME_VARIABLES.CANVAS_HEIGHT);
 
 			gameThat.drawBackground();
 			gameThat.road.renderRoad(gameThat.player, gameThat.sprites, gameThat.enemies);
-			// gameThat.player.drawNitro();
 
-			// gameThat.player.drawSpeed();
 			gameThat.updatePlayerPosition();
 
 			gameThat.last = now;
@@ -112,7 +97,6 @@ class Game {
 
 		if (gameThat.player.crossFinish && gameThat.player.speed == 0) {
 			gameThat.showFinishPosition();
-			console.log('Finish')
 			return;
 		}
 		requestAnimationFrame(gameThat.frame);
@@ -136,7 +120,7 @@ class Game {
 		GAME_VARIABLES.ctx.shadowOffsetX = 3;
 		GAME_VARIABLES.ctx.shadowOffsetY = 3;
 		GAME_VARIABLES.ctx.fillStyle = 'white';
-		GAME_VARIABLES.ctx.fillText(gameOverText, GAME_VARIABLES.CANVAS_WIDTH * 0.3, 100);
+		GAME_VARIABLES.ctx.fillText(gameOverText, GAME_VARIABLES.CANVAS_WIDTH * 0.4, 100);
 		GAME_VARIABLES.ctx.font = '40px Press Start';
 		GAME_VARIABLES.ctx.fillText(positionText, GAME_VARIABLES.CANVAS_WIDTH * 0.25, 200);
 	}
@@ -202,7 +186,7 @@ class Game {
 
 				}
 			}
-}
+		}
 	}
 
 	update(dt) {
@@ -213,9 +197,7 @@ class Game {
 
 		gameThat.player.update(dt
 			, playerSegment
-			, totalTrackLength
-			, gameThat.keyPressedFlags
-			, gameThat.nitroPressed);
+			, totalTrackLength);
 
 		if (playerSegment.curve > 0 && gameThat.player.speed) {
 			gameThat.updateBackground(true);
@@ -248,18 +230,15 @@ class Game {
 
 		if (e.keyCode >= KEY_PRESSED_CODE.LEFT && e.keyCode <= KEY_PRESSED_CODE.DOWN) {
 			if (!gameThat.player.crossFinish) {
-				// gameThat.keyPressedFlags[e.keyCode - 37] = true;
 				KEY_PRESSED_FLAGS[e.keyCode - KEY_PRESSED_CODE.LEFT] = true;
 			}
 			else {
-				// gameThat.keyPressedFlags[e.keyCode - 37] = false;
 
 				KEY_PRESSED_FLAGS[e.keyCode - KEY_PRESSED_CODE.LEFT] = false;
 			}
 
 		}
 		else {
-			// console.log('key',e.key);
 			switch (e.keyCode) {
 				case KEY_PRESSED_CODE.V:
 					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V] = !KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V];
@@ -293,7 +272,6 @@ class Game {
 			KEY_PRESSED_FLAGS[e.keyCode - KEY_PRESSED_CODE.LEFT] = false;
 		}
 		else {
-			// console.log('key',e.key);
 			switch (e.keyCode) {
 				case KEY_PRESSED_CODE.N:
 					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N] = false;
@@ -315,14 +293,6 @@ class Game {
 					break;
 			}
 		}
-		//arrow key ranges from 37-40 with 37=LEFT in clockwise
-		// gameThat.keyPressedFlags[e.keyCode - 37] = false;
-
-		// switch(e.key){
-		// 	case 'n':
-		// 		gameThat.nitroPressed=false;
-		// 		break;
-		// }
 	}
 
 }

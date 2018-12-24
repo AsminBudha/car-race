@@ -1,6 +1,7 @@
 class Player extends Car {
 	constructor() {
-		super(0, -1, -0.5, 5);
+		//x, y, offset, startZoom initial position later it will be updated automatically
+		super(0, -1, -1, 5);
 
 		this.worldCoordinates = {
 			x: 0,
@@ -13,7 +14,7 @@ class Player extends Car {
 		this.nitro = [];
 	}
 
-	drawPlayer(sprites, steer, updown, destX, destY) {
+	drawPlayer(sprites, steer, destX, destY) {
 
 		let sprite;
 
@@ -29,11 +30,6 @@ class Player extends Car {
 			else {
 				sprite = sprites[IMAGES.PLAYER_STRAIGHT];
 			}
-			// let bounce = (1.5 * Math.random() * (this.speed / GAME_VARIABLES.maxSpeed) * GAME_VARIABLES.resolution);
-			// let choices = [-1, 1];
-			// console.log('bounce', bounce, this.speed, this.maxSpeed);
-			// bounce *= choices[Math.floor(Math.random() * 2)];
-
 			renderSprite(sprite, GAME_VARIABLES.cameraDepth / this.z, destX, destY, this.playerOffset, this.playerY, 0, this.worldCoordinates);
 		}
 		else {
@@ -77,7 +73,7 @@ class Player extends Car {
 		if (this.speed > 0) {
 
 			if (speedMeter < 100) {
-				// console.log(maxSpeedMeter);
+
 				let speedMeterWidth = 280 * speedPercent / 100;
 				GAME_VARIABLES.ctx.fillStyle = '#32324e';
 				GAME_VARIABLES.ctx.fillRect(10, 20, speedMeterWidth, 20);
@@ -96,57 +92,51 @@ class Player extends Car {
 
 		}
 
-
-
 		GAME_VARIABLES.ctx.fillStyle = '#FFF';
 		GAME_VARIABLES.ctx.font = '36px Press Start';
 		GAME_VARIABLES.ctx.fillText('MPH ' + speedMeter, 20, 80);
 
-		if(KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]){
+		if (KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]) {
 			GAME_VARIABLES.ctx.beginPath();
-			// GAME_VARIABLES.ctx.lineWidth = 60;
-			GAME_VARIABLES.ctx.fillStyle='white';
+			GAME_VARIABLES.ctx.fillStyle = 'white';
 			GAME_VARIABLES.ctx.fillRect(
-				GAME_VARIABLES.CANVAS_WIDTH/2-85
-				, GAME_VARIABLES.CANVAS_HEIGHT-180
-				,200,200);
-			// GAME_VARIABLES.ctx.stroke();
+				GAME_VARIABLES.CANVAS_WIDTH / 2 - 85
+				, GAME_VARIABLES.CANVAS_HEIGHT - 180
+				, 200, 200);
 
-			let startAngle=2*Math.PI/3;
-			let angleInPercent=speedPercent*360/100;
-			let endAngle=startAngle;
-			// console.log(speedMeter,angleInPercent);
-			// if(angleInPercent<=60 && angleInPercent>0){
-				// console.log(speedMeter,angleInPercent);
+			let startAngle = 2 * Math.PI / 3;
+			let angleInPercent = speedPercent * 360 / 100;
+			let endAngle = startAngle;
+
+			endAngle = startAngle;
+			if (angleInPercent <= 60 * 360 / 100 && angleInPercent > 0) {
 				endAngle = startAngle;
-				if (angleInPercent<=60*360/100 && angleInPercent>0){
-					endAngle = startAngle;
-					endAngle+= angleInPercent*Math.PI/180;
-					angleInPercent-=60*360/100;	
-				}
+				endAngle += angleInPercent * Math.PI / 180;
+				angleInPercent -= 60 * 360 / 100;
+			}
 
-				if(angleInPercent>0){
-					if(angleInPercent<=180*360/100){
-						endAngle+=Math.PI-angleInPercent*Math.PI/180;
-						endAngle=-endAngle;
-						angleInPercent-=180*360/100;
-					}
-					else{
-						endAngle=Math.PI-angleInPercent*Math.PI/180;
-					}
+			if (angleInPercent > 0) {
+				if (angleInPercent <= 180 * 360 / 100) {
+					endAngle += Math.PI - angleInPercent * Math.PI / 180;
+					endAngle = -endAngle;
+					angleInPercent -= 180 * 360 / 100;
 				}
-				
+				else {
+					endAngle = Math.PI - angleInPercent * Math.PI / 180;
+				}
+			}
+
 			GAME_VARIABLES.ctx.beginPath();
 			GAME_VARIABLES.ctx.lineWidth = 60;
-			GAME_VARIABLES.ctx.strokeStyle='#1172a9';
+			GAME_VARIABLES.ctx.strokeStyle = '#1172a9';
 			GAME_VARIABLES.ctx.ellipse(
-				GAME_VARIABLES.CANVAS_WIDTH/2-5
-				, GAME_VARIABLES.CANVAS_HEIGHT-125
+				GAME_VARIABLES.CANVAS_WIDTH / 2 - 5
+				, GAME_VARIABLES.CANVAS_HEIGHT - 125
 				, 60
-				,45
-				,0
-				,startAngle
-				,endAngle);
+				, 45
+				, 0
+				, startAngle
+				, endAngle);
 			GAME_VARIABLES.ctx.stroke();
 		}
 
@@ -191,8 +181,6 @@ class Player extends Car {
 			if (KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N]) {
 				accel += accel;
 				maxSpeed += 0.5 * maxSpeed;
-				// console.log('nitro');
-				// this.drawNitro(this.worldCoordinates.x,this.worldCoordinates.y+this.worldCoordinates.height);
 			}
 			this.updateSpeed(this.ACCEL, dt, accel, maxSpeed);
 		}
@@ -208,12 +196,10 @@ class Player extends Car {
 	}
 
 	drawNitro() {
-		// console.log(KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N]);
 		if (!KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N] || KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]) {
 			return;
 		}
-		// console.log(KEY_PRESSED_FLAGS);
-		// console.log('Nitro');
+
 		let colorNitroLight = new Color(7, 121, 223);
 		let colorNitroDark = new Color(10, 37, 160);
 		let px = this.worldCoordinates.x;
@@ -244,7 +230,7 @@ class Player extends Car {
 		let interval = setInterval(() => {
 			for (let i = 0; i < this.nitro.length; i++) {
 				this.nitro[i].updatePosition();
-				// particles.draw();
+
 				this.nitro[i].draw();
 				if (this.nitro[i].a < 0) {
 					this.nitro.splice(i, 1);
