@@ -1,6 +1,6 @@
 let container = document.getElementsByTagName('div')[0];
 let startsound = new Audio('./music/bg-music.mp3');
-setTimeout(() => {
+setInterval(() => {
   startsound.play();
 }, 0);
 
