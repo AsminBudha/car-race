@@ -17,7 +17,6 @@ class Road {
 
 		});
 
-
 	}
 
 	initObstacles(sprites) {
@@ -126,13 +125,12 @@ class Road {
 				}
 
 			}
-
 		}
 
 		player.drawPlayer(sprites
 			, (keyLeft ? -1 : keyRight ? 1 : 0)
-			, GAME_VARIABLES.CANVAS_WIDTH / 2
-			, (GAME_VARIABLES.CANVAS_HEIGHT / 2)
+			, GAME_VARIABLES.CANVAS_WIDTH / 2 //destX
+			, (GAME_VARIABLES.CANVAS_HEIGHT / 2) //destY
 			- (GAME_VARIABLES.cameraDepth / playerZ
 				* interpolate(playerSegment.p1.camera.y, playerSegment.p2.camera.y, playerPercent)
 				* GAME_VARIABLES.CANVAS_HEIGHT / 2)
@@ -147,6 +145,11 @@ class Road {
 
 	}
 
+  /**
+   * Draw Sand while moving in desert outside road
+   * @param {*} px =x position from where sand or dust is generated
+   * @param {*} py =y position from where sand or dust is generated
+   */
 	drawSand(px, py) {
 
 		if (KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]) {
@@ -185,6 +188,17 @@ class Road {
 		}, 100);
 	}
 
+  /**
+   * draws current road segment
+   * @param {*} x1 = x position of point p1 in current road segment
+   * @param {*} y1 = y positioin of point p1 in current road segment
+   * @param {*} w1 = width of point p1 in current road segment
+   * @param {*} x2 = x position of point p2 in current road segment
+   * @param {*} y2 = y position of point p2 in current road segment
+   * @param {*} w2 = width of poing p2 in current road segment
+   * @param {*} color = colors for road, rumbel, lane and desert
+   * @param {*} sprites = All images used in this game
+   */
 	drawRoadSegment(x1, y1, w1, x2, y2, w2, color, sprites) {
 
 		let lanes = GAME_VARIABLES.lanes;
@@ -194,7 +208,7 @@ class Road {
 			l2 = this.getLaneMarkerWidth(w2, lanes);
 		let lanew1, lanew2, lanex1, lanex2, lane;
 
-		//Grass with full Canvas width
+		//Desert with full Canvas width
 		let ground = sprites[IMAGES.DESERT_GROUND];
 		GAME_VARIABLES.ctx.drawImage(ground, 0, y2, GAME_VARIABLES.CANVAS_WIDTH, y1 - y2);
 
@@ -216,9 +230,9 @@ class Road {
 
 
 	addRoad(enter, hold, leave, curve, y) {
-		var startY = this.lastY();
-		var endY = startY + (y * GAME_VARIABLES.segmentLength);
-		var n, total = enter + hold + leave;
+		let startY = this.lastY();
+		let endY = startY + (y * GAME_VARIABLES.segmentLength);
+	  let n, total = enter + hold + leave;
 		for (n = 0; n < enter; n++) {
 			let tempCurve = this.easeIn(0, curve, n / enter);
 			this.addSegment(tempCurve, this.easeInOut(startY, endY, n / total));
@@ -277,6 +291,7 @@ class Road {
 		GAME_VARIABLES.ctx.fill();
 	}
 
+  //Translation, Projection and Scaling
 	project(p, cameraX, cameraY, cameraZ) {
 		p.camera.x = (p.world.x || 0) - cameraX;
 		p.camera.y = (p.world.y || 0) - cameraY;

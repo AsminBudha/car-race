@@ -1,5 +1,5 @@
 let container = document.getElementsByTagName('div')[0];
-var startsound = new Audio('./music/bg-music.mp3');
+let startsound = new Audio('./music/bg-music.mp3');
 setTimeout(() => {
   startsound.play();
 }, 0);

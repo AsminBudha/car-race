@@ -16,5 +16,4 @@ class Color {
     }
 }
 
-let color = new Color(240,191,136);
-// let color = new Color(0, 0, 0);
+// let color = new Color(240, 191, 136);

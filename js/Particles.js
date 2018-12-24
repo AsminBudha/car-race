@@ -33,14 +33,4 @@ class Particles {
         GAME_VARIABLES.ctx.closePath();
     }
 
-    // drawPath() {
-    //     // this.context.clearRect(0,0,this.canvas.clientWidth,this.canvas.height)
-    //     this.context.beginPath();
-    //     // this.context.fillRect(this.x, this.y, 5, 5);
-    //     this.context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    //     this.context.fillStyle = this.color;
-    //     this.context.fill();
-    //     this.context.closePath();
-    // }
-
 }
