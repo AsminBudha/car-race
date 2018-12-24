@@ -17,8 +17,6 @@ class Game {
 		this.timer = 0;
 
 		this.road = new Road();
-		this.road.initObstacles(this.sprites);
-
 		this.player = new Player();
 		this.enemies = [];
 		for (let i = 0; i < 4; i++) {
@@ -45,6 +43,7 @@ class Game {
 				this.gdt = 0;
 				this.countdown = -1;
 
+				this.road.initObstacles(this.sprites);
 
 				this.frame();
 			}
