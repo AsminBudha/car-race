@@ -17,17 +17,22 @@ class Player extends Car {
 
 		let sprite;
 
+		this.drawSpeed();
 
 		if (!KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]) {
 			if (steer < 0) {
-				sprite = (updown > 0) ? sprites[IMAGES.PLAYER_UPHILL_LEFT] : sprites[IMAGES.PLAYER_LEFT];
+				sprite = sprites[IMAGES.PLAYER_LEFT];
 			}
 			else if (steer > 0) {
-				sprite = (updown > 0) ? sprites[IMAGES.PLAYER_UPHILL_RIGHT] : sprites[IMAGES.PLAYER_RIGHT];
+				sprite = sprites[IMAGES.PLAYER_RIGHT];
 			}
 			else {
-				sprite = (updown > 0) ? sprites[IMAGES.PLAYER_UPHILL_STRAIGHT] : sprites[IMAGES.ENEMY_1_STRAIGHT];
+				sprite = sprites[IMAGES.PLAYER_STRAIGHT];
 			}
+			// let bounce = (1.5 * Math.random() * (this.speed / GAME_VARIABLES.maxSpeed) * GAME_VARIABLES.resolution);
+			// let choices = [-1, 1];
+			// console.log('bounce', bounce, this.speed, this.maxSpeed);
+			// bounce *= choices[Math.floor(Math.random() * 2)];
 
 			renderSprite(sprite, GAME_VARIABLES.cameraDepth / this.z, destX, destY, this.playerOffset, this.playerY, 0, this.worldCoordinates);
 		}
@@ -51,6 +56,8 @@ class Player extends Car {
 				, 200
 			);
 		}
+
+		this.drawNitro();
 	}
 
 	drawSpeed() {
@@ -76,13 +83,14 @@ class Player extends Car {
 				GAME_VARIABLES.ctx.fillRect(10, 20, speedMeterWidth, 20);
 			}
 			else {
-				let upto80Width = (280 * 55.555555556) / 100;
-				GAME_VARIABLES.ctx.fillStyle = '#32324e';
-				GAME_VARIABLES.ctx.fillRect(10, 20, upto80Width, 20);
+				let speedGradient = GAME_VARIABLES.ctx.createLinearGradient(10, 20, 280, 20)
+				speedGradient.addColorStop(1, '#a30403');//'#f40000');
+				speedGradient.addColorStop(0.1, '#00006f');//'#32324e');
 
-				let speedMeterWidth = (280 * (speedPercent - 55.555555556)) / 100;
-				GAME_VARIABLES.ctx.fillStyle = '#f40000';
-				GAME_VARIABLES.ctx.fillRect(10 + upto80Width, 20, speedMeterWidth, 20);
+				GAME_VARIABLES.ctx.fillStyle = speedGradient;
+				let speedMeterWidth = 280 * speedPercent / 100;
+
+				GAME_VARIABLES.ctx.fillRect(10, 20, speedMeterWidth, 20);
 
 			}
 
@@ -91,8 +99,56 @@ class Player extends Car {
 
 
 		GAME_VARIABLES.ctx.fillStyle = '#FFF';
-		GAME_VARIABLES.ctx.font = '36px serif';
-		GAME_VARIABLES.ctx.fillText('MPH   ' + speedMeter, 20, 80);
+		GAME_VARIABLES.ctx.font = '36px Press Start';
+		GAME_VARIABLES.ctx.fillText('MPH ' + speedMeter, 20, 80);
+
+		if(KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]){
+			GAME_VARIABLES.ctx.beginPath();
+			// GAME_VARIABLES.ctx.lineWidth = 60;
+			GAME_VARIABLES.ctx.fillStyle='white';
+			GAME_VARIABLES.ctx.fillRect(
+				GAME_VARIABLES.CANVAS_WIDTH/2-85
+				, GAME_VARIABLES.CANVAS_HEIGHT-180
+				,200,200);
+			// GAME_VARIABLES.ctx.stroke();
+
+			let startAngle=2*Math.PI/3;
+			let angleInPercent=speedPercent*360/100;
+			let endAngle=startAngle;
+			// console.log(speedMeter,angleInPercent);
+			// if(angleInPercent<=60 && angleInPercent>0){
+				// console.log(speedMeter,angleInPercent);
+				endAngle = startAngle;
+				if (angleInPercent<=60*360/100 && angleInPercent>0){
+					endAngle = startAngle;
+					endAngle+= angleInPercent*Math.PI/180;
+					angleInPercent-=60*360/100;	
+				}
+
+				if(angleInPercent>0){
+					if(angleInPercent<=180*360/100){
+						endAngle+=Math.PI-angleInPercent*Math.PI/180;
+						endAngle=-endAngle;
+						angleInPercent-=180*360/100;
+					}
+					else{
+						endAngle=Math.PI-angleInPercent*Math.PI/180;
+					}
+				}
+				
+			GAME_VARIABLES.ctx.beginPath();
+			GAME_VARIABLES.ctx.lineWidth = 60;
+			GAME_VARIABLES.ctx.strokeStyle='#1172a9';
+			GAME_VARIABLES.ctx.ellipse(
+				GAME_VARIABLES.CANVAS_WIDTH/2-5
+				, GAME_VARIABLES.CANVAS_HEIGHT-125
+				, 60
+				,45
+				,0
+				,startAngle
+				,endAngle);
+			GAME_VARIABLES.ctx.stroke();
+		}
 
 		GAME_VARIABLES.ctx.restore();
 	}
@@ -100,15 +156,15 @@ class Player extends Car {
 	drawPosition(position, total) {
 		GAME_VARIABLES.ctx.save();
 		GAME_VARIABLES.ctx.fillStyle = '#535353';
-		GAME_VARIABLES.ctx.fillRect(GAME_VARIABLES.CANVAS_WIDTH - 200, 0, 200, 50);
+		GAME_VARIABLES.ctx.fillRect(GAME_VARIABLES.CANVAS_WIDTH * 0.75, 0, 400, 50);
 
 		GAME_VARIABLES.ctx.fillStyle = '#C2810B';
-		GAME_VARIABLES.ctx.font = '30px serif';
-		GAME_VARIABLES.ctx.fillText('POS', GAME_VARIABLES.CANVAS_WIDTH - 180, 35);
+		GAME_VARIABLES.ctx.font = '30px Press Start';
+		GAME_VARIABLES.ctx.fillText('POS', GAME_VARIABLES.CANVAS_WIDTH * 0.8, 35);
 
 		GAME_VARIABLES.ctx.fillStyle = '#FFFF';
-		GAME_VARIABLES.ctx.font = '36px serif';
-		GAME_VARIABLES.ctx.fillText(position + '/' + total, GAME_VARIABLES.CANVAS_WIDTH - 100, 35);
+		GAME_VARIABLES.ctx.font = '36px Press Start';
+		GAME_VARIABLES.ctx.fillText(position + '/' + total, GAME_VARIABLES.CANVAS_WIDTH * 0.9, 35);
 
 		GAME_VARIABLES.ctx.restore();
 	}
@@ -118,10 +174,10 @@ class Player extends Car {
 		this.updatePosition(dt, totalTrackLength);
 
 		//Update X according to key presse index 0: left index 2: right
-		if (KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.LEFT] && !this.crossFinish && this.speed != 0) {
+		if (KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.LEFT] && !this.crossFinish) {
 			this.updateX(-dt);
 		}
-		else if (KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.RIGHT] && !this.crossFinish && this.speed != 0) {
+		else if (KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.RIGHT] && !this.crossFinish) {
 			this.updateX(dt);
 		}
 
@@ -153,28 +209,36 @@ class Player extends Car {
 
 	drawNitro() {
 		// console.log(KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N]);
-		if (!KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N]) {
+		if (!KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N] || KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]) {
 			return;
 		}
 		// console.log(KEY_PRESSED_FLAGS);
 		// console.log('Nitro');
-		let COLOR_SAND_LIGHT = new Color(7, 121, 223);
-		let COLOR_SAND_DARK = new Color(10, 37, 160);
-		let px = this.worldCoordinates.x + this.worldCoordinates.width / 2;
+		let colorNitroLight = new Color(7, 121, 223);
+		let colorNitroDark = new Color(10, 37, 160);
+		let px = this.worldCoordinates.x;
+		let width = this.worldCoordinates.width;
 		let py = this.worldCoordinates.y + this.worldCoordinates.height;
-		for (let i = 0; i < 100; i++) {
+		for (let i = 0; i < 50; i++) {
 			let x = Math.floor(Math.random() * 20);
 			let y = Math.floor(Math.random() * 50);
-			let particles;
+			let particles, nextParticle;
 			if (i % 5 == 0) {
-				particles = new Particles(px + x, py + y, 1, COLOR_SAND_DARK.getRGBString(), 0, -1);
+				particles = new Particles(px + width * 0.25 + x, py + y, 2, colorNitroLight.getRGBString(), 0, -1);
 				particles.draw();
+
+				nextParticle = new Particles(px + width * 0.75 + x, py + y, 2, colorNitroLight.getRGBString(), 0, -1);
+				nextParticle.draw();
 			}
 			else {
-				particles = new Particles(px + x, py + y, 10, COLOR_SAND_LIGHT.getRGBString(), 0, 1);
+				particles = new Particles(px + width * 0.25 + x, py + y, 10, colorNitroDark.getRGBString(), 0, 1);
 				particles.draw();
+
+				nextParticle = new Particles(px + width * 0.75 + x, py + y, 10, colorNitroDark.getRGBString(), 0, 1);
+				nextParticle.draw();
 			}
 			this.nitro.push(particles);
+			this.nitro.push(nextParticle);
 		}
 
 		let interval = setInterval(() => {

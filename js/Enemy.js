@@ -21,14 +21,13 @@ class Enemy extends Car {
     let enemyX = enemySegment.p1.screen.x
       + (enemyScale * this.playerOffset * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2);
     let enemyY = enemySegment.p1.screen.y;
-    // let enemyPercent = this.percentRemaining(this.position + this.z, GAME_VARIABLES.segmentLength);
+    let enemyPercent = percentRemaining(this.position, GAME_VARIABLES.segmentLength);
 
     // enemyY = enemyY
-    //   - (GAME_VARIABLES.cameraDepth / playerZ
-    //     * this.interpolate(enemySegment.p1.camera.y, enemySegment.p2.camera.y, ene)
-    //     * enemyY)
-
-    let isUP = enemySegment.p1.world.y != 0;
+    //   - (GAME_VARIABLES.cameraDepth / this.z
+    //     * interpolate(enemySegment.p1.camera.y, enemySegment.p2.camera.y, enemyPercent)
+    //     * enemyY);
+    // let isUP = enemySegment.p1.world.y != 0;
 
     let steer = 0;
     if (enemySegment.curve > 0) {
@@ -41,13 +40,13 @@ class Enemy extends Car {
     let sprite;
 
     if (steer < 0) {
-      sprite = (isUP > 0) ? sprites[IMAGES.PLAYER_UPHILL_LEFT] : sprites[IMAGES.PLAYER_LEFT];
+      sprite = sprites[IMAGES.CAR_2_RIGHT];
     }
     else if (steer > 0) {
-      sprite = (isUP > 0) ? sprites[IMAGES.PLAYER_UPHILL_RIGHT] : sprites[IMAGES.PLAYER_RIGHT];
+      sprite = sprites[IMAGES.CAR_2_LEFT];
     }
     else {
-      sprite = (isUP > 0) ? sprites[IMAGES.PLAYER_UPHILL_STRAIGHT] : sprites[IMAGES.PLAYER_STRAIGHT];
+      sprite = sprites[IMAGES.CAR_2_STRAIGHT];
     }
 
     renderSprite(sprite, enemyScale
@@ -67,7 +66,6 @@ class Enemy extends Car {
     else {
       this.updateSpeed(this.ACCEL, dt, this.accel, this.maxSpeed);
     }
-
 
   }
 }

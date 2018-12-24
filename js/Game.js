@@ -1,4 +1,4 @@
-var startsound = new Audio('./music/main-menu.mp3');
+
 class Game {
 
 	constructor() {
@@ -17,11 +17,16 @@ class Game {
 		this.timer = 0;
 
 		this.road = new Road();
+		this.road.initObstacles(this.sprites);
+
 		this.player = new Player();
 		this.enemies = [];
 		for (let i = 0; i < 4; i++) {
 
-			this.enemies.push(new Enemy(0.5, -1, i & 1 ? -0.2 : 0.2, 5 + 3 * i));
+			let z=5 + 3 * i;
+			this.enemies.push(new Enemy(0.5, -1, i & 1 ? -0.2 : 0.2, z));
+			let enemySegment=this.road.findSegment(z);
+			enemySegment.enemies.push(this.enemies[i]);
 		}
 		this.sprites = [];
 
@@ -32,7 +37,7 @@ class Game {
 		let totalImg = 0;
 		let onLoad = () => {
 			totalImg++;
-			if (totalImg == IMAGES_SRC.length) {
+			if (totalImg >= IMAGES_SRC.length) {
 				document.addEventListener('keydown', this.keyDownHandler, true);
 				document.addEventListener('keyup', this.keyUpHandler, true);
 
@@ -40,7 +45,6 @@ class Game {
 				this.gdt = 0;
 				this.countdown = -1;
 
-				this.road.initObstacles(this.sprites);
 
 				this.frame();
 			}
@@ -81,14 +85,15 @@ class Game {
 
 			gameThat.drawBackground();
 			gameThat.road.renderRoad(gameThat.player, gameThat.sprites, gameThat.enemies);
-			gameThat.player.drawNitro();
+			// gameThat.player.drawNitro();
 
-			gameThat.player.drawSpeed();
+			// gameThat.player.drawSpeed();
 			gameThat.updatePlayerPosition();
 
 			gameThat.last = now;
 		}
 		else {
+
 			if (gameThat.countdown == -1) {
 				gameThat.drawBackground();
 				gameThat.road.renderRoad(gameThat.player, gameThat.sprites, gameThat.enemies);
@@ -100,9 +105,7 @@ class Game {
 				gameThat.countdown++;
 				if (gameThat.countdown <= 3) {
 					gameThat.drawCountDown(gameThat.countdown);
-					setTimeout(() => {
-						startsound.play();
-					}, 0);
+
 				}
 				gameThat.last = now;
 			}
@@ -110,6 +113,7 @@ class Game {
 
 		if (gameThat.player.crossFinish && gameThat.player.speed == 0) {
 			gameThat.showFinishPosition();
+			console.log('Finish')
 			return;
 		}
 		requestAnimationFrame(gameThat.frame);
@@ -127,15 +131,15 @@ class Game {
 			gameOverText = 'You Lose';
 			positionText = 'Your Position is ' + gameThat.player.lastPosition;
 		}
-		GAME_VARIABLES.ctx.font = '48px serif';
+		GAME_VARIABLES.ctx.font = '48px Press Start';
 		GAME_VARIABLES.ctx.shadowBlur = 4;
 		GAME_VARIABLES.ctx.shadowColor = 'rgba(0,0,0,0.8)';
 		GAME_VARIABLES.ctx.shadowOffsetX = 3;
 		GAME_VARIABLES.ctx.shadowOffsetY = 3;
 		GAME_VARIABLES.ctx.fillStyle = 'white';
-		GAME_VARIABLES.ctx.fillText(gameOverText, GAME_VARIABLES.CANVAS_WIDTH / 2 - 100, 100);
-		GAME_VARIABLES.ctx.font = '40px serif';
-		GAME_VARIABLES.ctx.fillText(positionText, GAME_VARIABLES.CANVAS_WIDTH / 2 - 150, 200);
+		GAME_VARIABLES.ctx.fillText(gameOverText, GAME_VARIABLES.CANVAS_WIDTH * 0.3, 100);
+		GAME_VARIABLES.ctx.font = '40px Press Start';
+		GAME_VARIABLES.ctx.fillText(positionText, GAME_VARIABLES.CANVAS_WIDTH * 0.25, 200);
 	}
 	updatePlayerPosition() {
 		if (!gameThat.player.crossFinish) {
@@ -199,7 +203,7 @@ class Game {
 
 				}
 			}
-		}
+}
 	}
 
 	update(dt) {
@@ -210,7 +214,9 @@ class Game {
 
 		gameThat.player.update(dt
 			, playerSegment
-			, totalTrackLength);
+			, totalTrackLength
+			, gameThat.keyPressedFlags
+			, gameThat.nitroPressed);
 
 		if (playerSegment.curve > 0 && gameThat.player.speed) {
 			gameThat.updateBackground(true);
@@ -258,7 +264,6 @@ class Game {
 			switch (e.keyCode) {
 				case KEY_PRESSED_CODE.V:
 					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V] = !KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V];
-					// gameThat.player.topView = !gameThat.player.topView;
 					break;
 				case KEY_PRESSED_CODE.N:
 					KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.N] = true;
