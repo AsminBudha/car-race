@@ -70,9 +70,9 @@ class Car {
         this.accelerate(GAME_VARIABLES.offRoadDecel, dt);
       }
       else if (this.speed < 0 && this.speed < -GAME_VARIABLES.offRoadLimit / 6) {
-        console.log(this.speed, -GAME_VARIABLES.offRoadLimit, -GAME_VARIABLES.offRoadDecel);
+        // console.log(this.speed, -GAME_VARIABLES.offRoadLimit, -GAME_VARIABLES.offRoadDecel);
         this.accelerate(-GAME_VARIABLES.offRoadDecel * 2.5, dt);
-        console.log('next', this.speed);
+        // console.log('next', this.speed);
       }
     }
 

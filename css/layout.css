@@ -1,3 +1,7 @@
+@font-face{
+  font-family: 'Press Start';
+  src: url('../font/prstart.ttf');
+}
 .btn-race {
     background-color: #c05a34;
     font-size: 24px;

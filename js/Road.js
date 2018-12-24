@@ -49,19 +49,20 @@ class Road {
 
 		let playerX = player.x;
 		let playerZ = player.z;
+		
 		let playerSegment = this.findSegment(player.position + playerZ);
 
 		player.playerX = player.x - (playerSegment.curve * GAME_VARIABLES.centrifugal);
 
-		var baseSegment = this.findSegment(player.position);
-		var maxy = GAME_VARIABLES.CANVAS_HEIGHT;
-		var n, segment;
+		let baseSegment = this.findSegment(player.position);
+		let maxy = GAME_VARIABLES.CANVAS_HEIGHT;
+		let n, segment;
 
-		var basePercent = percentRemaining(player.position, GAME_VARIABLES.segmentLength);
-		var dx = - (baseSegment.curve * basePercent), x = 0;
+		let basePercent = percentRemaining(player.position, GAME_VARIABLES.segmentLength);
+		let dx = - (baseSegment.curve * basePercent), x = 0;
 
-		var playerPercent = percentRemaining(player.position + playerZ, GAME_VARIABLES.segmentLength);
-		var playerY = interpolate(baseSegment.p1.world.y, baseSegment.p2.world.y, playerPercent);
+		let playerPercent = percentRemaining(player.position, GAME_VARIABLES.segmentLength);
+		let playerY = interpolate(baseSegment.p1.world.y, baseSegment.p2.world.y, playerPercent);
 
 		for (n = 0; n < GAME_VARIABLES.drawDistance; n++) {
 
@@ -125,51 +126,21 @@ class Road {
 				renderSprite(sprite.sprite, spriteScale
 					, spriteX, spriteY, (sprite.offset < 0 ? -1 : 0), -1, segment.clip, objCoordintaes);
 
-				if (segment == playerSegment) {
+				if (segment.index == playerSegment.index + 1) {
 
 					if (player.checkCollisionWith(objCoordintaes)) {
 						player.speed = 0;
 					}
 				}
 			}
-			// if(segment.sprites.length==0 && this.segments[(segment.index + 100) % this.segments.length].sprites.length==0){
-			// 	let objects=['GRASS_1','CACTUS_1','CACTUS_2'];
-			// 	// , { position: 600, sprite: 'GRASS_1', offset: 5.1 }
-			// 	let sprite=sprites[IMAGES[objects[Math.floor(Math.random()*2)]]];
-			// 	let spriteScale = segment.p1.screen.scale;
-			// 	let spriteX = segment.p1.screen.x + (spriteScale * 2.5 * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2);
-			// 	let spriteY = segment.p1.screen.y;
-
-			// 	let objCoordintaes = {
-			// 		x: 0,
-			// 		y: 0,
-			// 		width: 0,
-			// 		height: 0
-			// 	};
-			// 	renderSprite(sprite, spriteScale
-			// 		, spriteX, spriteY, (2.5 < 0 ? -1 : 0), -1, segment.clip, objCoordintaes);
-
-			// 	spriteX = segment.p1.screen.x + (spriteScale * -2.5 * GAME_VARIABLES.roadWidth * GAME_VARIABLES.CANVAS_WIDTH / 2);
-
-			// 	renderSprite(sprite, spriteScale
-			// 		, spriteX, spriteY, ((-2.5) < 0 ? -1 : 0), -1, segment.clip, objCoordintaes);
-			// 	// console.log('generate');
+			// console.log('enemies',segment.enemies.length);
+			// for(let i=0;i<segment.enemies.length;i++){
+				
+			// 	enemies[i].drawEnemy(segment, sprites);
 			// }
 			for (let i = 0; i < enemies.length; i++) {
 
 				let enemySegment = this.findSegment(enemies[i].position + enemies[i].z);
-
-				// if (enemySegment == playerSegment) {
-				// 	if (player.checkCollisionWith(enemies[i].worldCoordinates)) {
-				// 		if (player.worldCoordinates.y >= enemies[i].worldCoordinates.y) {
-				// 			player.speed = 0;
-				// 		}
-				// 		else {
-				// 			enemies[i].speed = 0;
-				// 		}
-
-				// 	}
-				// }
 
 				if (segment == enemySegment) {
 					enemies[i].drawEnemy(enemySegment, sprites);
@@ -199,6 +170,10 @@ class Road {
 	}
 
 	drawSand(px, py) {
+
+		if(KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]){
+			return;
+		}
 
 		let COLOR_SAND_LIGHT = new Color(240, 191, 136);
 		let COLOR_SAND_DARK = new Color(101, 67, 33);
@@ -301,6 +276,7 @@ class Road {
 			},
 			curve: curve,
 			sprites: [],
+			enemies:[],
 			'color': {
 				'road': GAME_VARIABLES.COLOR.ROAD,
 				'grass': Math.floor(index / GAME_VARIABLES.rumbleLength) & 1 ? GAME_VARIABLES.COLOR.GRASS_DARK : GAME_VARIABLES.COLOR.GRASS_LIGHT,
@@ -308,7 +284,6 @@ class Road {
 				'lane': Math.floor(index / GAME_VARIABLES.rumbleLength) & 1 ? GAME_VARIABLES.COLOR.LANE_DARK : GAME_VARIABLES.COLOR.LANE_LIGHT
 			}
 		});
-		// this.addSegmentInMiniMap(curve)
 	}
 
 	addSegmentInMiniMap(curve) {
