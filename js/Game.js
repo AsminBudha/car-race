@@ -123,7 +123,11 @@ class Game {
 		GAME_VARIABLES.ctx.fillText(gameOverText, GAME_VARIABLES.CANVAS_WIDTH * 0.4, 100);
 		GAME_VARIABLES.ctx.font = '40px Press Start';
 		GAME_VARIABLES.ctx.fillText(positionText, GAME_VARIABLES.CANVAS_WIDTH * 0.25, 200);
-	}
+  }
+
+  /**
+   * Find the position of player and calls draw function which write position in canvas
+   */
 	updatePlayerPosition() {
 		if (!gameThat.player.crossFinish) {
 			let playerPosition = [];
@@ -206,7 +210,8 @@ class Game {
 			gameThat.updateBackground(false);
 		}
 
-	}
+  }
+
 	drawCountDown(countdown) {
 		GAME_VARIABLES.ctx.drawImage(gameThat.sprites[IMAGES.COUNTDOWN_3 + countdown], GAME_VARIABLES.CANVAS_WIDTH / 2 - 150, 10);
 	}
@@ -216,6 +221,10 @@ class Game {
 			, gameThat.backgroundX, 0, GAME_VARIABLES.CANVAS_WIDTH * 1.5, gameThat.sprites[IMAGES.BACKGROUND].height);
 	}
 
+  /**
+   * This function is called when player is in curve
+   * @param {*} left = boolean value which tells whether player is moving left or right
+   */
 	updateBackground(left) {
 		if (left) {
 			gameThat.backgroundX -= 0.2;
@@ -296,6 +305,7 @@ class Game {
 	}
 
 }
+
 let gameThat = null;
 let game = new Game();
 game.start();

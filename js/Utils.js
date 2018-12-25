@@ -35,10 +35,10 @@ GAME_VARIABLES.cameraDepth = 1 / Math.tan((GAME_VARIABLES.fieldOfView / 2) * Mat
 GAME_VARIABLES.resolution = GAME_VARIABLES.CANVAS_HEIGHT / 480;
 GAME_VARIABLES.step = 1 / GAME_VARIABLES.fps;
 GAME_VARIABLES.maxSpeed = GAME_VARIABLES.segmentLength / GAME_VARIABLES.step;
-GAME_VARIABLES.accel = GAME_VARIABLES.maxSpeed / 5;             // acceleration rate - tuned until it 'felt' right
+GAME_VARIABLES.accel = GAME_VARIABLES.maxSpeed / 5;             // acceleration rate
 GAME_VARIABLES.breaking = -GAME_VARIABLES.maxSpeed;               // deceleration rate when braking
 GAME_VARIABLES.decel = -GAME_VARIABLES.maxSpeed / 5;             // 'natural' deceleration rate when neither accelerating, nor braking
-GAME_VARIABLES.offRoadDecel = -GAME_VARIABLES.maxSpeed / 2;             // off road deceleration is somewhere in between
+GAME_VARIABLES.offRoadDecel = -GAME_VARIABLES.maxSpeed / 2;             // off road deceleration
 GAME_VARIABLES.offRoadLimit = GAME_VARIABLES.maxSpeed / 4;
 
 let CAR = {
@@ -119,13 +119,13 @@ SPRITE = {
 
 const renderSprite = function (sprite, scale, destX, destY, offsetX, offsetY, clipY, worldObj) {
 
-	var destW = (sprite.width * scale * GAME_VARIABLES.CANVAS_WIDTH / 2) * (SPRITE.scale * GAME_VARIABLES.roadWidth);
-	var destH = (sprite.height * scale * GAME_VARIABLES.CANVAS_WIDTH / 2) * (SPRITE.scale * GAME_VARIABLES.roadWidth);
+	let destW = (sprite.width * scale * GAME_VARIABLES.CANVAS_WIDTH / 2) * (SPRITE.scale * GAME_VARIABLES.roadWidth);
+	let destH = (sprite.height * scale * GAME_VARIABLES.CANVAS_WIDTH / 2) * (SPRITE.scale * GAME_VARIABLES.roadWidth);
 
 	destX = destX + (destW * (offsetX || 0));
 	destY = destY + (destH * (offsetY || 0));
 
-	var clipH = clipY ? Math.max(0, destY + destH - clipY) : 0;
+	let clipH = clipY ? Math.max(0, destY + destH - clipY) : 0;
 
 	if (clipH < destH) {
 		GAME_VARIABLES.ctx.drawImage(sprite, 0, 0, sprite.width
