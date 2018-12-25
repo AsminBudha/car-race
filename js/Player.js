@@ -1,7 +1,7 @@
 class Player extends Car {
 	constructor() {
 		//x, y, offset, startZoom initial position later it will be updated automatically
-		super(0, -1, -1, 5);
+		super(0, -1, -0.5, 5);
 
 		this.worldCoordinates = {
 			x: 0,
@@ -22,13 +22,13 @@ class Player extends Car {
 
 		if (!KEY_PRESSED_FLAGS[KEY_PRESSED_INDEX.V]) {
 			if (steer < 0) {
-				sprite = sprites[IMAGES.PLAYER_LEFT];
+				sprite = sprites[IMAGES.CAR_2_LEFT];
 			}
 			else if (steer > 0) {
-				sprite = sprites[IMAGES.PLAYER_RIGHT];
+				sprite = sprites[IMAGES.CAR_2_RIGHT];
 			}
 			else {
-				sprite = sprites[IMAGES.PLAYER_STRAIGHT];
+				sprite = sprites[IMAGES.CAR_2_STRAIGHT];
 			}
 			renderSprite(sprite, GAME_VARIABLES.cameraDepth / this.z, destX, destY, this.playerOffset, this.playerY, 0, this.worldCoordinates);
 		}
